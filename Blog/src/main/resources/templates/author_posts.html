@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Публікації користувача <span th:text="${author.firstName} + ' ' + ${author.lastName}">Ім'я Автора</span></title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #1E1E1E;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            color: #BB86FC;
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #BB86FC;
+            color: #121212;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #03DAC6;
+            color: #1E1E1E;
+        }
+
+        /* --- Стилі для сітки постів --- */
+        .author-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            align-items: start; /* Вирівнює елементи по верху */
+        }
+
+        .author-post-item {
+            background-color: #2C2C2C;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .author-post-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .author-post-item h3 {
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+            font-size: 1.3em;
+            word-break: break-word;
+        }
+
+        .author-post-item h3 a {
+            color: #BB86FC;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .author-post-item h3 a:hover {
+            color: #03DAC6;
+        }
+
+        /* --- Стилі для контейнера тексту поста --- */
+        .post-body-container {
+            max-height: 80px; /* Початкова максимальна висота */
+            overflow: hidden; /* Обрізає текст */
+            position: relative;
+            transition: max-height 0.4s ease-out;
+            margin-bottom: 0.8rem;
+            /* ЗАБРАНО flex-grow: 1; */
+            /* Мінімальна висота, щоб короткий текст не прилипав до верху (опціонально) */
+            min-height: 40px; /* Наприклад, висота ~2 рядків */
+        }
+
+        .post-body-container.expanded {
+            max-height: 1000px; /* Достатньо велика висота для повного тексту */
+            min-height: 40px; /* Залишаємо мінімальну висоту */
+        }
+
+        /* ЗАБРАНО градієнт */
+        /* .post-body-container:not(.expanded)::after { ... } */
+
+        p.post-body {
+            color: #C0C0C0;
+            margin: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+
+        /* --- Стилі для кнопки "Читати далі" --- */
+        .read-more-btn {
+            /* --- ДОДАНО: Сховати кнопку за замовчуванням --- */
+            display: none;
+            /* ------------------------------------------------ */
+            background-color: transparent;
+            border: 1px solid #BB86FC;
+            color: #BB86FC;
+            padding: 0.3rem 0.8rem;
+            cursor: pointer;
+            margin-top: auto;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s, color 0.3s;
+            align-self: flex-start;
+        }
+        .read-more-btn:hover {
+            background-color: #BB86FC;
+            color: #121212;
+        }
+
+        /* --- Кінець стилів для "Читати далі / Згорнути" --- */
+
+
+        .post-meta {
+            font-size: 0.85em;
+            color: #888;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        .no-posts-message {
+            text-align: center;
+            color: #888;
+            margin-top: 3rem;
+            font-size: 1.1em;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #333;
+            margin: 2rem 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title" th:text="'Всі публікації ' + ${author.firstName} + ' ' + ${author.lastName}">Всі публікації автора</h1>
+        <a th:href="@{/}" class="back-button">На головну</a>
+    </div>
+
+    <hr />
+
+    <div th:if="${not #lists.isEmpty(posts)}">
+        <div class="author-posts-grid">
+            <div class="author-post-item" th:each="post : ${posts}">
+                <h3><a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Заголовок поста</a></h3>
+
+                <div class="post-body-container">
+                    <p class="post-body" th:text="${post.body}">Тіло публікації...</p>
+                </div>
+                <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
+
+                <div class="post-meta" th:if="${post.createdAt != null}">
+                    <span th:text="'Опубліковано: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy')}">Дата</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(posts)}" class="no-posts-message">
+        <p>Автор ще не опублікував жодного поста.</p>
+    </div>
+
+</div>
+
+<script>
+    // Функція перемикання стану
+    function toggleReadMore(button) {
+        const postItem = button.closest('.author-post-item');
+        if (!postItem) return;
+        const textContainer = postItem.querySelector('.post-body-container');
+        if (!textContainer) return;
+
+        const isNowExpanded = textContainer.classList.toggle('expanded');
+        button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
+        // При згортанні повертаємо max-height (якщо він раптом був змінений)
+        if (!isNowExpanded) {
+            textContainer.style.maxHeight = null; // Дозволяє CSS знову керувати max-height
+        }
+    }
+
+    // Обробка після завантаження сторінки
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.author-post-item').forEach(item => {
+            const container = item.querySelector('.post-body-container');
+            const button = item.querySelector('.read-more-btn');
+
+            if (container && button) {
+                // Отримуємо обчислений max-height з CSS (важливо!)
+                const computedStyle = window.getComputedStyle(container);
+                const maxHeight = parseInt(computedStyle.maxHeight, 10);
+
+                // Перевіряємо, чи повна висота контенту більша за максимальну висоту
+                // Додаємо невеликий допуск (2px)
+                if (container.scrollHeight > (maxHeight + 2)) {
+                    // Якщо текст довший за контейнер - показуємо кнопку
+                    button.style.display = 'inline-block'; // Або 'block', якщо хочете на всю ширину
+                } else {
+                    // Якщо текст короткий - кнопка залишається схованою (display: none з CSS)
+                    // І прибираємо max-height, щоб короткий текст не обрізався зверху/знизу
+                    container.style.maxHeight = 'none';
+                    // Можна також додати клас, щоб прибрати інші ефекти, якщо потрібно
+                    // container.classList.add('is-short');
+                }
+            }
+        });
+
+        // Додаємо обробник кліку до всіх кнопок (можна винести з DOMContentLoaded, якщо функція toggleReadMore глобальна)
+        document.querySelectorAll('.read-more-btn').forEach(btn => {
+            btn.addEventListener('click', () => toggleReadMore(btn)); // Викликаємо існуючу функцію
+        });
+    });
+</script>
+
+
+</body>
+</html>

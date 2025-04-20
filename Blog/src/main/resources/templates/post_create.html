@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #1E1E1E;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h2.text-center {
+            text-align: center;
+            color: #BB86FC;
+            margin-bottom: 1.5rem;
+        }
+
+        a {
+            color: #BB86FC;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #03DAC6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #03DAC6;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #BB86FC;
+            outline: none;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #BB86FC;
+            color: #121212;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #03DAC6;
+        }
+
+
+
+    </style>
+
+
+
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/}">Home</a>
+    <form action="#"
+          th:action="@{'/posts/create'}"
+          th:object="${post}"
+          method="post">
+        <input type="hidden" th:field="*{account}" />
+        <input type="hidden" th:field="*{createdAt}" />
+        <h2 class="text-center">Напишіть свій пост</h2>
+        <div class="form-group">
+            <label for="new-post-title">Заголовок</label>
+            <input id="new-post-title" type="text" th:field="*{title}" placeholder="Заголовок"/>
+        </div>
+        <div class="form-group">
+            <label for="new-post-body">Текст/Контент</label>
+            <textarea id="new-post-body" th:field="*{body}"></textarea>
+        </div>
+        <button type="submit">Опублікувати</button>
+    </form>
+</div>
+
+</body>
+</html>

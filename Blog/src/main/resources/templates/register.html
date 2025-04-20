@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reg</title>
+
+    <style>
+
+        body {
+            background-color: #222;
+            color: #fff;
+        }
+
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 400px;
+        }
+
+        .container h1, .container h2 {
+            text-align: center;
+        }
+
+        .container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .container input[type="text"],
+        .container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .container button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .container button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .container .terms {
+            text-align: center;
+        }
+        .container a {
+            display: block;
+            color: #fff; /* Білий колір посилання */
+            text-align: center;
+            margin-bottom: 20px; /* Збільшимо відстань від посилання до нижнього краю блока */
+            text-decoration: none; /* Забираємо підкреслення з посилання */
+        }
+
+
+
+
+
+
+
+
+
+    </style>
+
+
+</head>
+<body>
+<div class="container">
+    <h1>Вітаємо</h1>
+    <hr />
+    <a th:href="@{/}">Повернутися на головну(тик)</a>
+    <h2 class="text-center">Реєстрація</h2>
+    <form action="#"
+          th:action="@{/register}"
+          th:object="${account}"
+          method="POST">
+        <div >
+            <label for="firstname">Ваш Ім'я</label>
+            <input id="firstname" type="text" th:field="*{firstName}" placeholder="Ім'я"/>
+        </div>
+        <div >
+            <label for="lastname">Ваше Прізвище</label>
+            <input id="lastname" type="text" th:field="*{lastName}" placeholder="Прізвище"/>
+        </div>
+        <div >
+            <label for="email">Пошта</label>
+            <input id="email" type="text" th:field="*{email}" placeholder="Пошта"/>
+        </div>
+        <div >
+            <label for="password">Пароль</label>
+            <input id="password" type="password" th:field="*{password}" placeholder="Пароль"/>
+        </div>
+        <button type="submit">Зареєструватися</button>
+        <p class="terms"></p>
+    </form>
+</div>
+
+</body>
+</html>
