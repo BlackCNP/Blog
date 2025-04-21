@@ -5,245 +5,91 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
+    <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title>Home</title>
 
     <style>
-        body {
-            background-color: #121212;
-            color: #E0E0E0;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            padding-top: 65px; /* Відступ зверху для фіксованого хедера */
-        }
+        /* --- Існуючі стилі (body, header, container, post, h2, h5, read-more, etc.) --- */
+        body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; padding-top: 65px; }
+        .sticky-header { position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .header-left a { color: #BB86FC; text-decoration: none; font-size: 1.2em; font-weight: bold; }
+        .header-nav a, .header-nav span, .header-nav form button { color: #E0E0E0; text-decoration: none; margin-left: 1.2rem; font-size: 0.95em; vertical-align: middle; }
+        .header-nav a:hover, .header-nav form button:hover { color: #03DAC6; }
+        .header-nav form { display: inline; margin: 0; padding: 0; }
+        .header-nav form button { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+        .header-nav a.create-post-btn { border: 1px solid #BB86FC; padding: 0.4rem 0.8rem; border-radius: 5px; transition: background-color 0.3s ease, color 0.3s ease; }
+        .header-nav a.create-post-btn:hover { background-color: #BB86FC; color: #121212; }
+        .header-nav .current-user-link { font-weight: bold; color: #16ceed; font-size: 1.1em; transition: color 0.3s ease; }
+        .header-nav .current-user-link:hover { color: #03DAC6; }
+        .container { background-color: #1E1E1E; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); width: 90%; max-width: 1100px; margin: 2rem auto; }
+        h1.page-title { color: #BB86FC; text-align: center; margin-bottom: 2rem; }
+        hr { border: 0; border-top: 1px solid #333; margin: 2rem 0; }
+        .posts-container { margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; align-items: start; }
+        .post { background-color: #2C2C2C; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .post:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); }
+        .post h2 { margin-top: 0; margin-bottom: 0.8rem; font-size: 1.3em; }
+        .post h2 a { color: #BB86FC; text-decoration: none; word-break: break-word; }
+        .post h2 a:hover { color: #03DAC6; }
+        .post h5 { color: #888; margin: 0.3rem 0; font-size: 0.9em; }
+        .post h5 a { color: #03DAC6; text-decoration: none; }
+        .post h5 a:hover { text-decoration: underline; }
+        .post-body-container { max-height: 120px; overflow: hidden; position: relative; transition: max-height 0.4s ease-out; margin-top: 1rem; margin-bottom: 0.8rem; line-height: 1.6; min-height: 40px; flex-grow: 1; }
+        .post-body-container.expanded { max-height: 5000px; transition: max-height 0.6s ease-in; min-height: 40px; }
+        p.post-body { color: #C0C0C0; margin: 0; word-break: break-word; overflow-wrap: break-word; }
+        .read-more-btn { display: none; background-color: transparent; border: 1px solid #BB86FC; color: #BB86FC; padding: 0.3rem 0.8rem; cursor: pointer; margin-top: auto; border-radius: 5px; font-size: 0.9em; transition: background-color 0.3s, color 0.3s; align-self: flex-start; }
+        .read-more-btn:hover { background-color: #BB86FC; color: #121212; }
+        #myBtnTop, #myBtnBottom { display: none; position: fixed; right: 30px; z-index: 99; border: none; outline: none; background-color: #BB86FC; color: white; cursor: pointer; padding: 12px; border-radius: 8px; transition: background-color 0.3s ease; opacity: 0.8; }
+        #myBtnTop { bottom: 70px; }
+        #myBtnBottom { bottom: 25px; }
+        #myBtnTop:hover, #myBtnBottom:hover { background-color: #03DAC6; opacity: 1; }
 
-        /* --- Стилі для фіксованого хедера --- */
-        .sticky-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #1E1E1E;
-            padding: 0.8rem 1.5rem;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-            z-index: 1000;
+        /* --- ДОДАНО: Стилі для секції лайків --- */
+        .like-section {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-sizing: border-box;
+            gap: 0.5rem; /* Відстань між серцем і лічильником */
+            margin-top: 1rem; /* Відступ від кнопки "Читати далі" або тексту */
+            align-self: flex-end; /* Притиснути до правого краю картки */
         }
 
-        .header-left a {
-            color: #BB86FC;
-            text-decoration: none;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .header-nav a, .header-nav span, .header-nav form button {
-            color: #E0E0E0;
-            text-decoration: none;
-            margin-left: 1.2rem;
-            font-size: 0.95em;
-            vertical-align: middle;
-        }
-
-        .header-nav a:hover, .header-nav form button:hover {
-            color: #03DAC6;
-        }
-
-        .header-nav form {
-            display: inline;
-            margin: 0;
-            padding: 0;
-        }
-
-        .header-nav form button {
+        .like-button {
             background: none;
             border: none;
             padding: 0;
             cursor: pointer;
-            font-family: inherit;
+            font-size: 1.4em; /* Розмір серця */
+            color: #666;      /* Колір порожнього серця (сірий) */
+            transition: color 0.2s ease, transform 0.2s ease;
+            line-height: 1; /* Для кращого вирівнювання */
         }
-        .header-nav a.create-post-btn {
-            border: 1px solid #BB86FC;
-            padding: 0.4rem 0.8rem;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        /* Стиль для кнопки, коли користувач авторизований */
+        .like-button.interactive:hover {
+            color: #BB86FC; /* Колір при наведенні для авторизованих */
         }
-        .header-nav a.create-post-btn:hover {
-            background-color: #BB86FC;
-            color: #121212;
+        .like-button.interactive:active {
+            transform: scale(1.2); /* Ефект натискання */
         }
-
-        /* Стилі для посилання на поточного користувача */
-        .header-nav .current-user-link {
-            font-weight: bold;
-            color: #16ceed;
-            font-size: 1.1em;
-            transition: color 0.3s ease;
+        /* Стиль для кнопки, коли пост лайкнутий */
+        .like-button.liked {
+            color: #ff4d4d; /* Колір заповненого серця (червоний) */
         }
-        .header-nav .current-user-link:hover {
-            color: #03DAC6;
+        .like-button.liked:hover {
+            color: #ff2a2a; /* Трохи яскравіший при наведенні на лайкнуте */
         }
-        /* --- Кінець стилів для хедера --- */
-
-
-        .container {
-            background-color: #1E1E1E;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            /* --- ЗМІНЕНО max-width --- */
-            max-width: 1100px;
-            margin: 2rem auto;
+        /* Стиль для неактивної кнопки (неавторизований користувач) */
+        .like-button:disabled {
+            cursor: default;
+            opacity: 0.5;
         }
 
-        h1.page-title {
-            color: #BB86FC;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        hr {
-            border: 0;
-            border-top: 1px solid #333;
-            margin: 2rem 0;
-        }
-
-        /* --- ОНОВЛЕНО: Стилі для контейнера постів (Grid Layout) --- */
-        .posts-container {
-            margin-top: 2rem;
-            display: grid; /* Вмикаємо Grid */
-            /* Колонки: авто-розміщення, мін. 300px, макс. 1fr (рівна частина) */
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem; /* Відстань між картками */
-            align-items: start; /* Вирівнювання карток по верху */
-        }
-        /* --- КІНЕЦЬ ОНОВЛЕННЯ --- */
-
-
-        .post { /* Стилі для окремої картки поста */
-            background-color: #2C2C2C;
-            padding: 1.5rem;
-            border-radius: 10px;
-            /* ЗАБРАНО margin-bottom, тепер відстань контролюється 'gap' в grid */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Ефект при наведенні */
-        }
-        .post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .post h2 {
-            margin-top: 0;
-            margin-bottom: 0.8rem; /* Додав відступ знизу для заголовка */
-            font-size: 1.3em; /* Зробив заголовок в картці трохи більшим */
-        }
-
-        .post h2 a {
-            color: #BB86FC;
-            text-decoration: none;
-            word-break: break-word;
-        }
-
-        .post h2 a:hover {
-            color: #03DAC6;
-        }
-
-        .post h5 {
-            color: #888;
-            margin: 0.3rem 0;
+        .like-count {
             font-size: 0.9em;
+            color: #aaa;
+            min-width: 1em; /* Щоб лічильник не стрибав при зміні 0 -> 1 */
+            text-align: right;
         }
-        .post h5 a {
-            color: #03DAC6;
-            text-decoration: none;
-        }
-        .post h5 a:hover {
-            text-decoration: underline;
-        }
-
-
-        /* Стилі для "Читати далі / Згорнути" */
-        .post-body-container {
-            max-height: 120px;
-            overflow: hidden;
-            position: relative;
-            transition: max-height 0.4s ease-out;
-            margin-top: 1rem;
-            margin-bottom: 0.8rem;
-            line-height: 1.6;
-            min-height: 40px;
-            flex-grow: 1; /* Дозволяє текстовому блоку зайняти доступне місце в картці */
-        }
-
-        .post-body-container.expanded {
-            max-height: 5000px;
-            transition: max-height 0.6s ease-in;
-            min-height: 40px;
-        }
-
-        p.post-body {
-            color: #C0C0C0;
-            margin: 0;
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .read-more-btn {
-            display: none;
-            background-color: transparent;
-            border: 1px solid #BB86FC;
-            color: #BB86FC;
-            padding: 0.3rem 0.8rem;
-            cursor: pointer;
-            margin-top: auto; /* Притискає до низу */
-            border-radius: 5px;
-            font-size: 0.9em;
-            transition: background-color 0.3s, color 0.3s;
-            align-self: flex-start;
-        }
-        .read-more-btn:hover {
-            background-color: #BB86FC;
-            color: #121212;
-        }
-        /* --- Кінець стилів --- */
-
-
-        /* Кнопки прокрутки */
-        #myBtnTop, #myBtnBottom {
-            display: none;
-            position: fixed;
-            right: 30px;
-            z-index: 99;
-            border: none;
-            outline: none;
-            background-color: #BB86FC;
-            color: white;
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-            opacity: 0.8;
-        }
-
-        #myBtnTop {
-            bottom: 70px;
-        }
-
-        #myBtnBottom {
-            bottom: 25px;
-        }
-
-        #myBtnTop:hover, #myBtnBottom:hover {
-            background-color: #03DAC6;
-            opacity: 1;
-        }
+        /* --- Кінець стилів для лайків --- */
 
     </style>
 </head>
@@ -265,10 +111,9 @@
                    th:text="${currentUserAccount.firstName != null ? currentUserAccount.firstName : #authentication.principal.username}"
                    class="current-user-link">
                 </a>
-                <b th:unless="${currentUserAccount != null}"
-                   sec:authentication="name"
-                   class="current-user-link">Username</b>
+                <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
             </span>
+            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">★ Вподобане</a>
             <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>
@@ -297,54 +142,128 @@
             </div>
             <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
 
+            <div class="like-section">
+                <button th:if="${#authorization.expression('isAuthenticated()')}"
+                        type="button"
+                        class="like-button interactive"
+                        th:classappend="${userLikedStatuses[post.id]} ? 'liked' : ''"
+                        th:attr="data-post-id=${post.id}, data-liked=${userLikedStatuses[post.id]}">
+                    <span th:if="${userLikedStatuses[post.id]}">♥</span> <span th:unless="${userLikedStatuses[post.id]}">♡</span> </button>
+                <button th:unless="${#authorization.expression('isAuthenticated()')}"
+                        type="button"
+                        class="like-button" disabled>
+                    <span>♡</span> </button>
+                <span class="like-count" th:text="${likeCounts[post.id]}">0</span>
+            </div>
         </div>
-        <div th:if="${#lists.isEmpty(posts)}" style="text-align: center; color: #888; margin-top: 2rem; grid-column: 1 / -1;"> <p>Ще немає жодного поста. Станьте першим!</p>
-            <a th:href="@{/posts/create}" sec:authorize="isAuthenticated()" style="color: #BB86FC; text-decoration: none;">Створити пост</a>
-            <p sec:authorize="!isAuthenticated()" style="margin-top: 0.5rem;">
-                <a th:href="@{/login}" style="color: #BB86FC; text-decoration: none;">Увійдіть</a> або
-                <a th:href="@{/register}" style="color: #BB86FC; text-decoration: none;">зареєструйтесь</a>, щоб додати пост.
-            </p>
+        <div th:if="${#lists.isEmpty(posts)}" style="text-align: center; color: #888; margin-top: 2rem; grid-column: 1 / -1;">
+            <p>Ще немає жодного поста...</p>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- Кнопки прокрутки ---
+    // --- Код для кнопок прокрутки та ReadMore (залишається без змін) ---
     var mybuttonTop = document.getElementById("myBtnTop");
     var mybuttonBottom = document.getElementById("myBtnBottom");
     window.onscroll = function() {scrollFunction()};
-    function scrollFunction() {
-        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonTop.style.display = "block"; } else { mybuttonTop.style.display = "none"; }
-        if ((window.innerHeight + Math.ceil(window.scrollY)) >= document.body.offsetHeight - 100) { mybuttonBottom.style.display = "none"; } else { if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonBottom.style.display = "block"; } else { mybuttonBottom.style.display = "none"; } }
-    }
+    function scrollFunction() { /* ... код ... */ if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonTop.style.display = "block"; } else { mybuttonTop.style.display = "none"; } if ((window.innerHeight + Math.ceil(window.scrollY)) >= document.body.offsetHeight - 100) { mybuttonBottom.style.display = "none"; } else { if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonBottom.style.display = "block"; } else { mybuttonBottom.style.display = "none"; } } }
     function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
     function bottomFunction() { window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); }
+    function toggleReadMore(button) { /* ... код ... */ const postItem = button.closest('.post'); if (!postItem) return; const textContainer = postItem.querySelector('.post-body-container'); if (!textContainer) return; const isNowExpanded = textContainer.classList.toggle('expanded'); button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі'; if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } } }
+    document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.post').forEach(item => { const c = item.querySelector('.post-body-container'), b = item.querySelector('.read-more-btn'); if(c && b) { const cs = window.getComputedStyle(c); let mh = 9999; if (cs.maxHeight && cs.maxHeight !== 'none') mh = parseInt(cs.maxHeight, 10); else if (cs.minHeight && cs.minHeight !== 'none') mh = parseInt(cs.minHeight, 10); else mh = 40; if (c.scrollHeight > (mh + 2)) b.style.display = 'inline-block'; else c.style.maxHeight = 'none'; } }); });
 
-    // --- Функція "Читати далі / Згорнути" ---
-    function toggleReadMore(button) {
-        const postItem = button.closest('.post');
-        if (!postItem) { console.error("Не вдалося знайти батьківський елемент '.post'!"); return; }
-        const textContainer = postItem.querySelector('.post-body-container');
-        if (!textContainer) { console.error("Не вдалося знайти контейнер '.post-body-container'!"); return; }
-        const isNowExpanded = textContainer.classList.toggle('expanded');
-        button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
-        if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } }
-    }
-
-    // --- Ініціалізація стану кнопок "Читати далі" ---
+    // === ДОДАНО: JavaScript для обробки лайків ===
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.post').forEach(item => {
-            const container = item.querySelector('.post-body-container');
-            const button = item.querySelector('.read-more-btn');
-            if (container && button) {
-                const computedStyle = window.getComputedStyle(container);
-                let maxHeight = 9999;
-                if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') { maxHeight = parseInt(computedStyle.maxHeight, 10); } else { if (computedStyle.minHeight && computedStyle.minHeight !== 'none') { maxHeight = parseInt(computedStyle.minHeight, 10); } else { maxHeight = 40; } }
-                if (container.scrollHeight > (maxHeight + 2)) { button.style.display = 'inline-block'; } else { container.style.maxHeight = 'none'; }
-            }
-        });
+
+        // Отримуємо CSRF токен і заголовок з мета-тегів (якщо CSRF увімкнено)
+        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+        const csrfTokenMeta = document.querySelector('meta[name="_csrf_token"]');
+        const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : null;
+        const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
+
+        // Використовуємо делегування подій для обробки кліків на .posts-container
+        const postsContainer = document.querySelector('.posts-container');
+        if (postsContainer) {
+            postsContainer.addEventListener('click', function(event) {
+                // Перевіряємо, чи клікнули саме на кнопку лайка (або її дочірній елемент)
+                const likeButton = event.target.closest('.like-button.interactive'); // Тільки активні кнопки
+
+                if (!likeButton) {
+                    return; // Клік не по кнопці лайка
+                }
+
+                handleLikeClick(likeButton); // Викликаємо функцію обробки
+            });
+        }
     });
+
+    async function handleLikeClick(button) {
+        const postId = button.dataset.postId;
+        // Перетворюємо рядок 'true'/'false' на boolean
+        const isLiked = button.dataset.liked === 'true';
+        const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
+
+        // Готуємо заголовки для Fetch
+        const headers = {
+            // Ми не надсилаємо тіло JSON, тому Content-Type не обов'язковий,
+            // але можемо вказати Accept, якщо очікуємо JSON відповідь
+            'Accept': 'application/json'
+        };
+        // Додаємо CSRF токен до заголовків, якщо він є
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+        const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
+        if (csrfHeader && csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: headers
+                // тіла запиту немає (body)
+            });
+
+            if (!response.ok) {
+                // Спробувати отримати текст помилки з відповіді
+                const errorData = await response.json().catch(() => ({ error: 'Server error with status: ' + response.status }));
+                console.error('Like/Unlike failed:', errorData.error || ('HTTP status ' + response.status));
+                alert('Помилка обробки лайка: ' + (errorData.error || 'Невідома помилка')); // Повідомлення користувачу
+                return;
+            }
+
+            const data = await response.json(); // Розбираємо JSON відповідь
+
+            if (data.success) {
+                // Оновлюємо лічильник
+                const likeCountSpan = button.nextElementSibling; // Припускаємо, що лічильник йде одразу за кнопкою
+                if (likeCountSpan && likeCountSpan.classList.contains('like-count')) {
+                    likeCountSpan.textContent = data.likeCount;
+                }
+
+                // Оновлюємо вигляд кнопки і data-атрибут
+                button.classList.toggle('liked');
+                button.dataset.liked = data.userLiked; // Встановлюємо новий статус
+
+                // Оновлюємо іконку всередині кнопки
+                const iconSpan = button.querySelector('span');
+                if(iconSpan) {
+                    iconSpan.textContent = data.userLiked ? '♥' : '♡';
+                }
+
+            } else {
+                console.error('Like/Unlike failed:', data.error || 'Unknown error from server');
+                alert('Помилка обробки лайка: ' + (data.error || 'Невідома помилка'));
+            }
+
+        } catch (error) {
+            console.error('Error sending like/unlike request:', error);
+            alert('Сталася помилка мережі при спробі поставити лайк.'); // Повідомлення користувачу
+        }
+    }
+    // === КІНЕЦЬ JAVASCRIPT для лайків ===
+
 </script>
 
 </body>

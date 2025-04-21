@@ -1,224 +1,263 @@
 <!DOCTYPE html>
-
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
-
     <meta charset="utf-8">
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Post</title>
-
-    <style>
-
-        body {
-
-            background-color: #121212;
-
-            color: #E0E0E0;
-
-            font-family: 'Roboto', sans-serif;
-
-
-
-            margin: 0;
-
-            padding: 2rem 0;
-
-        }
-
-
-
-        .container {
-
-            background-color: #1E1E1E;
-
-            padding: 2rem;
-
-            border-radius: 10px;
-
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-
-            width: 90%;
-
-            max-width: 600px;
-
-            margin: 0 auto;
-
-        }
-
-
-
-        h2.text-center {
-
-            text-align: center;
-
-            color: #BB86FC;
-
-            margin-bottom: 1rem;
-
-            /* Додано для перенесення довгих заголовків */
-
-            word-break: break-word;
-
-            overflow-wrap: break-word;
-
-        }
-
-
-
-        h5 {
-
-            color: #03DAC6;
-
-            margin: 0.5rem 0;
-
-        }
-
-
-
-        h5.text-muted {
-
-            color: #757575;
-
-        }
-
-
-
-        p { /* Стилі для ВСІХ параграфів */
-
-            line-height: 1.6;
-
-            margin: 1rem 0;
-
-            /* --- ДОДАНО ЦІ ВЛАСТИВОСТІ --- */
-
-            white-space: pre-wrap; /* Зберігає пробіли/переноси І дозволяє автоперенос */
-
-            overflow-wrap: break-word; /* Дозволяє розривати довгі слова */
-
-            word-wrap: break-word; /* Те саме, що overflow-wrap */
-
-            /* --- КІНЕЦЬ ДОДАНИХ ВЛАСТИВОСТЕЙ --- */
-
-        }
-
-
-
-        a {
-
-            color: #BB86FC;
-
-            text-decoration: none;
-
-            transition: color 0.3s ease;
-
-        }
-
-
-
-        a:hover {
-
-            color: #03DAC6;
-
-        }
-
-
-
-        ul {
-
-            list-style: none;
-
-            padding: 0;
-
-            display: flex;
-
-            justify-content: space-around;
-
-            margin-top: 1.5rem;
-
-        }
-
-
-
-        ul li {
-
-            margin: 0;
-
-        }
-
-
-
-        ul li a {
-
-            border: 1px solid #BB86FC;
-
-            padding: 0.5rem 1rem;
-
-            border-radius: 5px;
-
-            transition: background-color 0.3s ease, color 0.3s ease;
-
-        }
-
-
-
-        ul li a:hover {
-
-            background-color: #03DAC6;
-
-            color: #121212;
-
-        }
-
-
-
-    </style>
-
-
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
+    <meta name="_csrf_token" th:content="${_csrf?.token}"/>
+    <title th:text="${post.title} ?: 'Post'">Post</title> <style>
+    body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6;  padding-top: 65px; }
+    .sticky-header { /* Стилі для хедера, скопійовані з home.html */
+        position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
+    }
+    .header-left a { color: #BB86FC; text-decoration: none; font-size: 1.2em; font-weight: bold; }
+    .header-nav a, .header-nav span, .header-nav form button { color: #E0E0E0; text-decoration: none; margin-left: 1.2rem; font-size: 0.95em; vertical-align: middle; }
+    .header-nav a:hover, .header-nav form button:hover { color: #03DAC6; }
+    .header-nav form { display: inline; margin: 0; padding: 0; }
+    .header-nav form button { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+    .header-nav a.create-post-btn { border: 1px solid #BB86FC; padding: 0.4rem 0.8rem; border-radius: 5px; transition: background-color 0.3s ease, color 0.3s ease; }
+    .header-nav a.create-post-btn:hover { background-color: #BB86FC; color: #121212; }
+    .header-nav .current-user-link { font-weight: bold; color: #16ceed; font-size: 1.1em; transition: color 0.3s ease; }
+    .header-nav .current-user-link:hover { color: #03DAC6; }
+
+    .container {
+        background-color: #1E1E1E;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 700px;
+        margin: 2rem auto; /* Додано відступ зверху/знизу */
+    }
+
+    h2.text-center {
+        text-align: center;
+        color: #BB86FC;
+        margin-bottom: 1rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    h5 {
+        color: #888; /* Змінив колір мета-інформації */
+        margin: 0.3rem 0;
+        font-size: 0.9em;
+    }
+
+    h5 a { /* Посилання на автора */
+        color: #03DAC6;
+        text-decoration: none;
+    }
+    h5 a:hover {
+        text-decoration: underline;
+    }
+
+    h5.text-muted { /* Для дати */
+        color: #757575;
+    }
+
+    p.post-body { /* Стилі для тіла поста */
+        line-height: 1.7;
+        margin: 1.5rem 0;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        color: #E0E0E0; /* Основний колір тексту */
+    }
+
+    a {
+        color: #BB86FC;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #03DAC6;
+    }
+
+    .home-link {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Секція під постом (Лайки + Кнопки дій) */
+    .post-footer {
+        display: flex;
+        justify-content: space-between; /* Розділити лайки і кнопки */
+        align-items: center;
+        margin-top: 1.5rem;
+        border-top: 1px solid #333; /* Лінія розділення */
+        padding-top: 1.5rem;
+        flex-wrap: wrap; /* Перенос на малих екранах */
+        gap: 1rem;
+    }
+
+    /* Стилі для списку дій Edit/Delete */
+    .action-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        /* justify-content: flex-end; - тепер керується .post-footer */
+        gap: 1rem;
+        margin: 0; /* Забрано margin-top */
+    }
+
+    .action-list li {
+        margin: 0;
+    }
+
+    .action-list li a {
+        border: 1px solid #BB86FC;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        display: inline-block;
+    }
+
+    .action-list li a:hover {
+        background-color: #03DAC6;
+        color: #121212;
+    }
+
+    /* --- ДОДАНО: Стилі для секції лайків (ідентичні home.html) --- */
+    .like-section {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .like-button {
+        background: none; border: none; padding: 0; cursor: pointer;
+        font-size: 1.4em; color: #666; transition: color 0.2s, transform 0.2s;
+        line-height: 1;
+    }
+    .like-button.interactive:hover { color: #BB86FC; }
+    .like-button.interactive:active { transform: scale(1.2); }
+    .like-button.liked { color: #ff4d4d; }
+    .like-button.liked:hover { color: #ff2a2a; }
+    .like-button:disabled { cursor: default; opacity: 0.5; }
+
+    .like-count { font-size: 0.9em; color: #aaa; min-width: 1em; text-align: right; }
+    /* --- Кінець стилів для лайків --- */
+
+</style>
 
 </head>
-
 <body>
-
+<header class="sticky-header">
+    <div class="header-left">
+        <a th:href="@{/}">Мій Блог</a>
+    </div>
+    <nav class="header-nav">
+        <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/register}">Реєстрація</a>
+            <a th:href="@{/login}">Вхід</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+             <span>Привіт,
+                <a th:if="${currentUserAccount != null}"
+                   th:href="@{'/author/' + ${currentUserAccount.id}}"
+                   th:text="${currentUserAccount.firstName != null ? currentUserAccount.firstName : #authentication.principal.username}"
+                   class="current-user-link">
+                </a>
+                <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
+            </span>
+            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">★ Вподобане</a>
+            <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
+            <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
+                <button type="submit">Вийти</button>
+            </form>
+        </div>
+    </nav>
+</header>
 <div class="container">
-
-    <a th:href="@{/}">Home</a>
-
+    <a th:href="@{/}" class="home-link">&larr; На головну</a>
     <div class="post">
-
         <h2 class="text-center" th:text="${post.title}">Title</h2>
-
-        <h5>Автор блогу: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName}">Author Name</a></h5>
-
+        <h5>Автор: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} ">Author Name</a></h5>
         <h5 class="text-muted" th:if="${post.createdAt}" th:text="'Дата: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">Дата створення</h5>
-
         <h5 th:if="${post.modifiedAt != null and !post.modifiedAt.isEqual(post.createdAt)}"
-
             th:text="'Оновлено: ' + ${#temporals.format(post.modifiedAt, 'dd.MM.yyyy HH:mm')}">Дата Оновл</h5>
 
-        <p th:text="${post.body}">Текст публікації</p>
-
+        <p class="post-body" th:text="${post.body}">Текст публікації</p>
     </div>
 
-    <ul class="action-list" th:if="${canEditDelete}">
-        <li>
-            <a th:href="@{'/posts/' + ${post.id} + '/edit'}">Редагувати</a>
-        </li>
-        <li>
-            <a th:href="@{'/posts/' + ${post.id} + '/delete'}">Видалити</a>
-        </li>
-    </ul>
+    <div class="post-footer">
+        <div class="like-section">
+            <button th:if="${#authorization.expression('isAuthenticated()')}"
+                    type="button"
+                    class="like-button interactive"
+                    th:classappend="${userLiked} ? 'liked' : ''"
+                    th:attr="data-post-id=${post.id}, data-liked=${userLiked}">
+                <span th:if="${userLiked}">♥</span> <span th:unless="${userLiked}">♡</span> </button>
+            <button th:unless="${#authorization.expression('isAuthenticated()')}"
+                    type="button"
+                    class="like-button" disabled>
+                <span>♡</span>
+            </button>
+            <span class="like-count" th:text="${likeCount}">0</span>
+        </div>
+        <ul class="action-list" th:if="${canEditDelete}">
+            <li>
+                <a th:href="@{'/posts/' + ${post.id} + '/edit'}">Редагувати</a>
+            </li>
+            <li>
+                <a th:href="@{'/posts/' + ${post.id} + '/delete'}">Видалити</a>
+            </li>
+        </ul>
+    </div> </div>
 
-</div>
+<script>
+    // === JavaScript для обробки лайків ===
+    document.addEventListener('DOMContentLoaded', () => {
+        // Можна делегувати від .container або навіть document
+        document.addEventListener('click', function(event) {
+            const likeButton = event.target.closest('.like-button.interactive');
+            if (likeButton) {
+                handleLikeClick(likeButton);
+            }
+        });
+    });
 
+    async function handleLikeClick(button) {
+        const postId = button.dataset.postId;
+        const isLiked = button.dataset.liked === 'true';
+        const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
 
+        const headers = { 'Accept': 'application/json' };
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+        const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
+        if (csrfHeader && csrfToken) { headers[csrfHeader] = csrfToken; }
+
+        try {
+            const response = await fetch(apiUrl, { method: 'POST', headers: headers });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: 'Server error: ' + response.status }));
+                throw new Error(errorData.error || 'HTTP error');
+            }
+            const data = await response.json();
+
+            if (data.success) {
+                const likeCountSpan = button.nextElementSibling;
+                if (likeCountSpan && likeCountSpan.classList.contains('like-count')) {
+                    likeCountSpan.textContent = data.likeCount;
+                }
+                button.classList.toggle('liked');
+                button.dataset.liked = data.userLiked;
+                const iconSpan = button.querySelector('span');
+                if(iconSpan) { iconSpan.textContent = data.userLiked ? '♥' : '♡'; }
+            } else {
+                throw new Error(data.error || 'Unknown server error');
+            }
+        } catch (error) {
+            console.error('Like/Unlike failed:', error);
+            alert('Помилка обробки лайка: ' + error.message);
+        }
+    }
+    // === Кінець JavaScript для лайків ===
+</script>
 
 </body>
-
 </html>
