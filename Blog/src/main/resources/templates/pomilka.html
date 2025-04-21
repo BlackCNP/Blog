@@ -5,39 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Error</title>
-    <style>
-        @property --progress {
+
+    <!--<style>
+        @property &#45;&#45;progress {
             syntax: "<percentage>";
             inherits: true;
             initial-value: 0%;
         }
 
         :root {
-            --c1: #6eccee;
-            --c2: #f672ca;
-            --c3: #fdb428;
-            --c4: #b9f;
+            &#45;&#45;c1: #6eccee;
+            &#45;&#45;c2: #f672ca;
+            &#45;&#45;c3: #fdb428;
+            &#45;&#45;c4: #b9f;
         }
 
         @keyframes progress {
             from {
-                --progress: 0%;
+                &#45;&#45;progress: 0%;
             }
 
             to {
-                --progress: 100%;
+                &#45;&#45;progress: 100%;
             }
         }
 
         .circle {
-            --progress: 60%;
+            &#45;&#45;progress: 60%;
             background: conic-gradient(
                     at center,
-                    var(--c1) var(--progress),
-                    black var(--progress),
-                    var(--c2) calc(var(--progress) + 20%),
-                    var(--c3) calc(var(--progress) + 30%),
-                    var(--c3) calc(var(--progress) + 50%),
+                    var(&#45;&#45;c1) var(&#45;&#45;progress),
+                    black var(&#45;&#45;progress),
+                    var(&#45;&#45;c2) calc(var(&#45;&#45;progress) + 20%),
+                    var(&#45;&#45;c3) calc(var(&#45;&#45;progress) + 30%),
+                    var(&#45;&#45;c3) calc(var(&#45;&#45;progress) + 50%),
                     transparent
             );
             animation: progress 4s linear infinite;
@@ -68,7 +69,7 @@
             text-align: center;
             margin-top: 3em;
             padding: 5em;
-            border: 1px solid var(--c1);
+            border: 1px solid var(&#45;&#45;c1);
             border-radius: 10px;
             background-color: #222;
         }
@@ -83,7 +84,7 @@
                     transparent
             ),
             #111;
-            color: var(--c1);
+            color: var(&#45;&#45;c1);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -93,35 +94,35 @@
         }
 
         h1 {
-            color: var(--c2);
+            color: var(&#45;&#45;c2);
         }
 
         p {
-            color: var(--c3);
+            color: var(&#45;&#45;c3);
         }
 
         a {
-            color: var(--c4);
+            color: var(&#45;&#45;c4);
             text-decoration: none;
-            border: 1px solid var(--c4);
+            border: 1px solid var(&#45;&#45;c4);
             padding: 0.5em 1em;
             border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
         }
 
         a:hover {
-            background-color: var(--c4);
+            background-color: var(&#45;&#45;c4);
             color: #111;
         }
 
         hr {
-            border: 1px solid var(--c1);
+            border: 1px solid var(&#45;&#45;c1);
             margin: 2em 0;
         }
-    </style>
+    </style>-->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
-<div class="animated-container">
+<body class="error-page"> <div class="animated-container">
     <div class="circle"></div>
     <div class="circle"></div>
     <div class="circle"></div>
@@ -129,8 +130,6 @@
 <div class="text-container">
     <h1>Помилка</h1>
     <p>Зверніться до Адміна, або перевірте чи ви авторизовані!</p>
-
-
     <a th:href="@{/}">Home</a>
     <hr />
 </div>

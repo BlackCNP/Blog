@@ -20,52 +20,56 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
-
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(antMatcher("/css/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/js/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/fonts/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/webjars/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/")).permitAll();
-                    auth.requestMatchers(antMatcher("/rss/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/register/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/h2-console/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/swagger-ui/")).permitAll();
-                    auth.requestMatchers(antMatcher("/posts/**")).permitAll();
-                    auth.requestMatchers(antMatcher("/pomilka")).permitAll();
-                    auth.requestMatchers(antMatcher("/author_posts/**")).permitAll();
-                  //  auth.requestMatchers(antMatcher("/pomilka/**")).permitAll();
-                    auth.requestMatchers(PathRequest.toH2Console()).permitAll();
-                    auth.anyRequest().authenticated();
-                })
+                .csrf(AbstractHttpConfigurer::disable) // Відключення CSRF (для H2 консолі та API, якщо немає токенів)
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable) // Дозволити H2 консоль в iframe
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                antMatcher("/css/**"),
+                                antMatcher("/js/**"),
+                                antMatcher("/fonts/**"),
+                                antMatcher("/webjars/**"),
+                                antMatcher("/"), // Головна сторінка
+                                antMatcher("/rss/**"),
+                                antMatcher("/register/**"), // Сторінка реєстрації
+                                antMatcher("/login"), // Сторінка логіну
+                                antMatcher("/h2-console/**"), // H2 консоль
+                                antMatcher("/swagger-ui/**"), // Swagger UI V3 (перевірте точний шлях)
+                                antMatcher("/v3/api-docs/**"), // Swagger JSON/YAML
+                                antMatcher("/posts/**"), // Всі сторінки постів (перегляд, створення GET)
+                                antMatcher("/pomilka"), // Сторінка помилки
 
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(httpSecurityHeadersConfigurer -> {
-                    httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
-                })
+                                antMatcher("/author/**"),
 
+                                PathRequest.toH2Console() // Альтернативний спосіб дозволити H2
+                        ).permitAll()
+
+                        .anyRequest().authenticated() // Всі інші запити вимагають автентифікації
+                )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/")
-                        .failureUrl("/login?error")
-                        .permitAll()
+                        .loginPage("/login") // Кастомна сторінка логіну
+                        .loginProcessingUrl("/login") // URL для обробки логіну
+                        .usernameParameter("email") // Параметр для email
+                        .passwordParameter("password") // Параметр для паролю
+                        .defaultSuccessUrl("/", true) // Завжди редірект на головну після успішного входу
+                        .failureUrl("/login?error") // URL при помилці логіну
+                        .permitAll() // Дозволити всім доступ до сторінки логіну та обробки
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/?logout")
+                        .permitAll() // Дозволити всім вихід
                 );
-
 
         return http.build();
     }

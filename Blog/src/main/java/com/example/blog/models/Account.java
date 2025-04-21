@@ -39,9 +39,9 @@ public class Account implements Serializable {
 
 
     // --- ДОДАНО: Поле для зберігання вподобаних постів ---
-    @ManyToMany(mappedBy = "likedBy", fetch = FetchType.LAZY) // mappedBy вказує на поле в Post
-    private Set<Post> likedPosts = new HashSet<>(); // Множина постів, які лайкнув користувач
-    // --- КІНЕЦЬ ДОДАНОГО КОДУ ---
+    @ManyToMany(mappedBy = "likedBy", fetch = FetchType.LAZY)
+    private Set<Post> likedPosts = new HashSet<>();
+
 
 
     @Override
@@ -53,15 +53,13 @@ public class Account implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                // ", authorities=" + authorities + // Закоментовано, щоб уникнути проблем з LAZY/рекурсією
-                // ", posts_count=" + (posts != null ? posts.size() : 0) + // Приклад виводу кількості
-                // ", likedPosts_count=" + (likedPosts != null ? likedPosts.size() : 0) + // Приклад виводу кількості
+                // ", authorities=" + authorities +
+                // ", posts_count=" + (posts != null ? posts.size() : 0) +
+                // ", likedPosts_count=" + (likedPosts != null ? likedPosts.size() : 0) +
                 '}';
     }
 
-    // Потрібно перевизначити hashCode() та equals(), якщо ви працюєте з @ManyToMany.
-    // Lombok @EqualsAndHashCode(exclude = {"posts", "likedPosts", "authorities"}) може допомогти.
-    // Або згенерувати їх через IDE, зазвичай на основі поля 'id'.
+
 
     @Override
     public boolean equals(Object o) {

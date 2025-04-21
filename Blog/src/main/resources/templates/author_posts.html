@@ -7,8 +7,9 @@
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title>Публікації користувача <span th:text="${author.firstName} + ' ' + ${author.lastName}">Ім'я Автора</span></title>
-    <style>
-        /* --- Існуючі стилі (body, container, grid, item, read-more etc.) --- */
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <!-- <<style>
+        /* -&#45;&#45; Існуючі стилі (body, container, grid, item, read-more etc.) -&#45;&#45; */
         body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6;  padding-top: 65px; }
         .sticky-header { /* Стилі для хедера, скопійовані з home.html */
             position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
@@ -42,7 +43,7 @@
         .no-posts-message { text-align: center; color: #888; margin-top: 3rem; font-size: 1.1em; grid-column: 1 / -1; } /* Повідомлення займає весь рядок сітки */
         hr { border: 0; border-top: 1px solid #333; margin: 2rem 0; }
 
-        /* --- ДОДАНО: Стилі для секції лайків (ідентичні home.html) --- */
+        /* -&#45;&#45; ДОДАНО: Стилі для секції лайків (ідентичні home.html) -&#45;&#45; */
         .like-section {
             display: flex;
             align-items: center;
@@ -64,9 +65,9 @@
         .like-button:disabled { cursor: default; opacity: 0.5; }
 
         .like-count { font-size: 0.9em; color: #aaa; min-width: 1em; text-align: right; }
-        /* --- Кінець стилів для лайків --- */
+        /* -&#45;&#45; Кінець стилів для лайків -&#45;&#45; */
 
-    </style>
+    </style>-->
 </head>
 <body>
 <header class="sticky-header">
@@ -97,15 +98,14 @@
 </header>
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title" th:text="'Всі публікації користувача: ' + ${author.firstName} ">Всі публікації автора</h1>
-        <a th:href="@{/}" class="back-button">На головну</a>
+        <h1 class="page-title"> Всі публікації користувача: <span class="highlight-author-name" th:text="${author.firstName}">Ім'я Автора</span> </h1> <a th:href="@{/}" class="back-button">На головну</a>
     </div>
 
     <hr />
 
     <div th:if="${not #lists.isEmpty(posts)}">
-        <div class="author-posts-grid">
-            <div class="author-post-item" th:each="post : ${posts}">
+        <div class="posts-container">
+            <div class="post" th:each="post : ${posts}">
                 <div> <h3><a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Заголовок поста</a></h3>
                     <div class="post-body-container">
                         <p class="post-body" th:text="${post.body}">Тіло публікації...</p>
@@ -139,11 +139,11 @@
 
 </div>
 
-<script>
-    // --- Функція "Читати далі / Згорнути" (залишено без змін) ---
+<!--<script>
+    // -&#45;&#45; Функція "Читати далі / Згорнути" (залишено без змін) -&#45;&#45;
     function toggleReadMore(button) { /* ... код ... */ const postItem = button.closest('.author-post-item'); if (!postItem) return; const textContainer = postItem.querySelector('.post-body-container'); if (!textContainer) return; const isNowExpanded = textContainer.classList.toggle('expanded'); button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі'; if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } } }
 
-    // --- JavaScript для лайків (ідентичний home.html) ---
+    // -&#45;&#45; JavaScript для лайків (ідентичний home.html) -&#45;&#45;
     document.addEventListener('DOMContentLoaded', () => {
         // Ініціалізація кнопки "Читати далі" (тільки для цієї сторінки)
         document.querySelectorAll('.author-post-item').forEach(item => {
@@ -188,8 +188,74 @@
             } else { throw new Error(data.error || 'Unknown server error'); }
         } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
     }
+    // -&#45;&#45; Кінець JavaScript -&#45;&#45;
+</script>-->
+<script>
+    // --- Функція "Читати далі / Згорнути" (ОНОВЛЕНО СЕЛЕКТОР) ---
+    function toggleReadMore(button) {
+        const postItem = button.closest('.post'); // <--- Змінено тут
+        if (!postItem) return;
+        const textContainer = postItem.querySelector('.post-body-container');
+        if (!textContainer) return;
+        const isNowExpanded = textContainer.classList.toggle('expanded');
+        button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
+        // Необов'язкове скидання стилю, якщо потрібно, щоб CSS знову обмежував висоту
+        // if (!isNowExpanded) {
+        //     textContainer.style.maxHeight = null;
+        // }
+    }
+
+    // --- JavaScript для лайків та ініціалізації "Читати далі" (ОНОВЛЕНО СЕЛЕКТОР) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Ініціалізація кнопки "Читати далі"
+        document.querySelectorAll('.post').forEach(item => { // <--- Змінено тут
+            const container = item.querySelector('.post-body-container');
+            const button = item.querySelector('.read-more-btn');
+            if (container && button) {
+                // Перевіряємо, чи контент довший за максимальну висоту контейнера
+                // Додаємо невеликий допуск (+2 пікселі), щоб уникнути хибних спрацьовувань
+                if (container.scrollHeight > (container.clientHeight + 2) || container.scrollHeight > 80 ) { // 80 - це max-height з CSS
+                    button.style.display = 'inline-block'; // Показуємо кнопку
+                } else {
+                    // Якщо контент короткий, можна прибрати обмеження висоти взагалі (необов'язково)
+                    // container.style.maxHeight = 'none';
+                }
+            }
+        });
+
+        // Делегування подій для лайків
+        document.addEventListener('click', function(event) {
+            const likeButton = event.target.closest('.like-button.interactive');
+            if (likeButton) {
+                handleLikeClick(likeButton);
+            }
+        });
+    });
+
+    // Функція handleLikeClick залишається без змін
+    async function handleLikeClick(button) {
+        const postId = button.dataset.postId;
+        const isLiked = button.dataset.liked === 'true';
+        const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
+        const headers = { 'Accept': 'application/json' };
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+        const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
+        if (csrfHeader && csrfToken) { headers[csrfHeader] = csrfToken; }
+        try {
+            const response = await fetch(apiUrl, { method: 'POST', headers: headers });
+            if (!response.ok) { const errorData = await response.json().catch(() => ({ error: 'Server error: ' + response.status })); throw new Error(errorData.error || 'HTTP error'); }
+            const data = await response.json();
+            if (data.success) {
+                const likeCountSpan = button.nextElementSibling;
+                if (likeCountSpan && likeCountSpan.classList.contains('like-count')) { likeCountSpan.textContent = data.likeCount; }
+                button.classList.toggle('liked');
+                button.dataset.liked = data.userLiked;
+                const iconSpan = button.querySelector('span');
+                if(iconSpan) { iconSpan.textContent = data.userLiked ? '♥' : '♡'; }
+            } else { throw new Error(data.error || 'Unknown server error'); }
+        } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
+    }
     // --- Кінець JavaScript ---
 </script>
-
 </body>
 </html>

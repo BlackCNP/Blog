@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
-    <title th:text="${post.title} ?: 'Post'">Post</title> <style>
+    <title th:text="${post.title} ?: 'Post'">Post</title>
+    <!--
+    <style>
     body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6;  padding-top: 65px; }
     .sticky-header { /* Стилі для хедера, скопійовані з home.html */
         position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
@@ -121,7 +123,7 @@
         color: #121212;
     }
 
-    /* --- ДОДАНО: Стилі для секції лайків (ідентичні home.html) --- */
+    /* -&#45;&#45; ДОДАНО: Стилі для секції лайків (ідентичні home.html) -&#45;&#45; */
     .like-section {
         display: flex;
         align-items: center;
@@ -140,10 +142,10 @@
     .like-button:disabled { cursor: default; opacity: 0.5; }
 
     .like-count { font-size: 0.9em; color: #aaa; min-width: 1em; text-align: right; }
-    /* --- Кінець стилів для лайків --- */
+    /* -&#45;&#45; Кінець стилів для лайків -&#45;&#45; */
 
-</style>
-
+</style>-->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <header class="sticky-header">

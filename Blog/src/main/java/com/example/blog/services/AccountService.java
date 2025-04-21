@@ -38,14 +38,9 @@ public class AccountService {
         return accountRepository.findById(id);
     }
 
-    // --- ДОДАНО: Метод existsById ---
-    /**
-     * Перевіряє, чи існує акаунт із вказаним ID.
-     * Делегує виклик до AccountRepository.
-     * @param id ID акаунта для перевірки.
-     * @return true, якщо акаунт існує, інакше false.
-     */
-    @Transactional(readOnly = true) // Цей метод теж тільки читає дані
+
+
+    @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         return accountRepository.existsById(id);
     }

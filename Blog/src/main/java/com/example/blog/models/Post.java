@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula; // <-- Додано імпорт
 
 import java.time.LocalDateTime;
-import java.util.HashSet; // <-- Додано імпорт
-import java.util.Set;   // <-- Додано імпорт
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,51 +16,59 @@ import java.util.Set;   // <-- Додано імпорт
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id; // Зробив приватним для кращої інкапсуляції
+    private Long id;
 
-    private String title; // Зробив приватним
+    private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String body; // Зробив приватним
+    private String body;
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY) // Додав LAZY fetch для автора
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false)
     private Account account;
 
-    // --- ДОДАНО: Поле для зберігання лайків ---
-    @ManyToMany(fetch = FetchType.LAZY) // LAZY - щоб не завантажувати всіх юзерів одразу
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "post_like", // Назва проміжної таблиці
-            joinColumns = @JoinColumn(name = "post_id"), // Зовнішній ключ до таблиці Post
-            inverseJoinColumns = @JoinColumn(name = "account_id") // Зовнішній ключ до таблиці Account
+            name = "post_like", // Перевірте, чи ця назва правильна!
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id")
     )
-    private Set<Account> likedBy = new HashSet<>(); // Множина користувачів, які лайкнули пост
+    private Set<Account> likedBy = new HashSet<>();
+
+    // --- ДОДАНО: Поле для сортування за лайками ---
+    /**
+     * Це поле не зберігається в таблиці Post, а обчислюється
+     * базою даних при кожному запиті завдяки @Formula.
+     * Дозволяє сортувати пости за кількістю лайків.
+     * Важливо: "post_like" - це назва вашої проміжної таблиці для лайків.
+     * "pl.post_id" - назва колонки в цій таблиці, що посилається на Post.
+     * "id" - назва колонки ID в таблиці Post.
+     */
+    @Formula("(select count(*) from post_like pl where pl.post_id = id)")
+    private int likeCount; // Hibernate автоматично заповнить це поле
     // --- КІНЕЦЬ ДОДАНОГО КОДУ ---
 
 
-    // toString() краще генерувати через Lombok або IDE, щоб включити нові поля,
-    // але поки залишаємо ваш варіант, щоб не заважати.
     @Override
     public String toString() {
-        return "Post{" + // Змінив назву класу в toString
+        // Оновлений toString може включати likeCount, якщо потрібно,
+        // але основна логіка залишається
+        return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                // Не рекомендується виводити весь body в toString
-                // ", body='" + body + '\'' +
-                ", createdAt=" + createdAt + // Прибрав одинарні лапки для дат
-                ", modifiedAt=" + modifiedAt + // Прибрав одинарні лапки
-                ", accountId=" + (account != null ? account.getId() : null) + // Виводимо ID автора
-                ", likes=" + (likedBy != null ? likedBy.size() : 0) + // Додав кількість лайків
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", accountId=" + (account != null ? account.getId() : null) +
+                ", actualLikes=" + (likedBy != null ? likedBy.size() : 0) + // Реальний розмір колекції (може бути LAZY)
+                ", calculatedLikeCount=" + likeCount + // Значення з @Formula
                 '}';
     }
 
-    // Додатково: Методи для додавання/видалення лайка (необов'язково, але зручно)
-    // Потребують перевірки на null і т.д. в сервісному шарі
-
+    // Методи addLiker/removeLiker залишаються
     public void addLiker(Account account) {
         this.likedBy.add(account);
     }

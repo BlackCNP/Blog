@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit</title>
-    <style>
+    <!--<style>
         body {
             background-color: #121212;
             color: #E0E0E0;
@@ -102,54 +102,60 @@
         button:hover {
             background-color: #03DAC6;
         }
-    </style>
-
+    </style>-->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<body>
-<div class="container">
-    <a th:href="@{/posts/{id}(id=${post.id})}">&larr; Назад до поста</a>
-    <form action="#"
-          th:action="@{'/posts/{id}'(id=${post.id})}"
-          th:object="${post}"
-          method="post">
-        <input type="hidden" th:field="*{id}" />
-        <input type="hidden" th:field="*{account}" />
-        <input type="hidden" th:field="*{createdAt}" />
-
-        <h2 class="text-center">Редагування публікації</h2>
-        <div class="form-group">
-            <label for="edit-post-title">Заголовок</label>
-            <input id="edit-post-title" type="text" th:field="*{title}" placeholder="Заголовок" required/>
-        </div>
-        <div class="form-group">
-            <label for="edit-post-body">Текст публікації</label>
-            <textarea id="edit-post-body" th:field="*{body}" required></textarea>
-        </div>
-        <button type="submit">Оновити публікацію</button>
-    </form>
+<body class="center-form"> <div class="form-container"> <a th:href="@{/posts/{id}(id=${post.id})}" class="back-link-form">&larr; Назад до поста</a> <form action="#"
+                                                                                                                                                          th:action="@{'/posts/{id}'(id=${post.id})}"
+                                                                                                                                                          th:object="${post}"
+                                                                                                                                                          method="post">
+    <input type="hidden" th:field="*{id}" />
+    <input type="hidden" th:field="*{account}" />
+    <input type="hidden" th:field="*{createdAt}" /> <h2 class="text-center">Редагування публікації</h2>
+    <div class="form-group">
+        <label for="edit-post-title">Заголовок</label>
+        <input id="edit-post-title" type="text" th:field="*{title}" placeholder="Заголовок" required/>
+    </div>
+    <div class="form-group">
+        <label for="edit-post-body">Текст публікації</label>
+        <textarea id="edit-post-body" th:field="*{body}" required></textarea>
+    </div>
+    <button type="submit">Оновити публікацію</button>
+</form>
 </div>
 
 <script>
-    const textarea = document.getElementById('edit-post-body');
+    // Знаходимо textarea на сторінці (шукаємо за ID)
+    // Вам потрібно буде перевірити ID у ваших файлах
+    const textarea = document.getElementById('new-post-body') || document.getElementById('edit-post-body');
 
-    // Функція для авто-зміни розміру
+    // Функція для автоматичної зміни розміру
     function autoResizeTextarea(element) {
-        // Спочатку скидаємо висоту, щоб scrollHeight розрахувався правильно
+        if (!element) return; // Виходимо, якщо елемент не знайдено
+        // Тимчасово ставимо висоту auto, щоб scrollHeight розрахувався правильно
         element.style.height = 'auto';
-        // Встановлюємо висоту рівною повній висоті контенту
-        element.style.height = element.scrollHeight + 'px';
+        // Встановлюємо висоту рівною повній висоті контенту + невеликий запас (2px)
+        element.style.height = (element.scrollHeight + 2) + 'px';
+        // Запобігаємо появі непотрібної прокрутки всередині textarea
+        element.style.overflowY = 'hidden';
     }
 
-    // Обробник події 'input' (спрацьовує при друку, вставці, видаленні)
-    textarea.addEventListener('input', function() {
-        autoResizeTextarea(this);
-    });
+    // Додаємо обробник події 'input' (спрацьовує при друку, вставці, видаленні)
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            autoResizeTextarea(this);
+        });
 
-    // Викликаємо функцію при завантаженні сторінки,
-    // щоб встановити правильний розмір для вже існуючого тексту
-    document.addEventListener('DOMContentLoaded', (event) => {
-        autoResizeTextarea(textarea);
-    });
+        // Викликаємо функцію при завантаженні сторінки,
+        // щоб встановити правильний розмір для вже існуючого тексту (особливо для edit)
+        // Використовуємо setTimeout, щоб гарантувати, що всі стилі застосовані
+        setTimeout(() => {
+            autoResizeTextarea(textarea);
+        }, 0);
+
+        // Додатково можна додати resize при зміні розміру вікна, якщо потрібно
+        // window.addEventListener('resize', () => autoResizeTextarea(textarea));
+    }
 </script>
 </body>
 </html>

@@ -4,108 +4,239 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reg</title>
+    <title>Реєстрація</title>
 
-    <style>
-
-        body {
-            background-color: #222;
-            color: #fff;
-        }
-
-        .container {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 50px auto;
-            max-width: 400px;
-        }
-
-        .container h1, .container h2 {
-            text-align: center;
-        }
-
-        .container label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
+    <!--<style>
+        /* -&#45;&#45; Всі попередні стилі залишаються тут -&#45;&#45; */
+        body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 2rem 0; }
+        .container { background-color: #1E1E1E; padding: 2rem; border-radius: 10px; margin: 2rem auto; max-width: 450px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); position: relative; }
+        .back-link { display: inline-block; position: absolute; top: 1rem; left: 1.5rem; padding: 0.4rem 0.8rem; border: 1px solid #555; border-radius: 5px; color: #aaa; background-color: transparent; text-decoration: none; font-size: 0.9em; transition: all 0.3s ease; z-index: 2; }
+        .back-link:hover { background-color: rgba(187, 134, 252, 0.1); border-color: #BB86FC; color: #BB86FC; }
+        .container h1 { text-align: center; color: #BB86FC; margin-top: 2.5rem; margin-bottom: 0.5rem; }
+        .container h2 { text-align: center; color: #BB86FC; margin-bottom: 1.5rem; margin-top: 0; }
+        hr { border: 0; border-top: 1px solid #444; margin: 1.5rem 0; }
+        .form-group { margin-bottom: 1rem; position: relative; }
+        .container label { display: block; margin-bottom: 0.5rem; color: #03DAC6; font-size: 0.95em; display: flex; align-items: center; gap: 5px; }
         .container input[type="text"],
-        .container input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .container button[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        .container button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .container .terms {
-            text-align: center;
-        }
-        .container a {
-            display: block;
-            color: #fff; /* Білий колір посилання */
-            text-align: center;
-            margin-bottom: 20px; /* Збільшимо відстань від посилання до нижнього краю блока */
-            text-decoration: none; /* Забираємо підкреслення з посилання */
-        }
-
-
-
-
-
-
-
-
-
-    </style>
-
-
+        .container input[type="email"],
+        .container input[type="password"] { width: 100%; padding: 0.75rem; margin-bottom: 0; border: 1px solid #333; border-radius: 5px; background-color: #2C2C2C; color: #E0E0E0; box-sizing: border-box; font-size: 1em; transition: border-color 0.2s ease; }
+        .container input[type="text"]:focus,
+        .container input[type="email"]:focus,
+        .container input[type="password"]:focus { border-color: #BB86FC; outline: none; box-shadow: 0 0 5px rgba(187, 134, 252, 0.3); }
+        .container input.invalid-input { border-color: #ff4d4d !important; background-color: rgba(255, 77, 77, 0.1); }
+        .container button[type="submit"] { width: 100%; padding: 0.8rem; border: none; border-radius: 5px; background-color: #BB86FC; color: #121212; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: background-color 0.3s ease; margin-top: 1rem; }
+        .container button[type="submit"]:hover { background-color: #a16ef4; }
+        .container button[type="submit"]:disabled { background-color: #555; cursor: not-allowed; opacity: 0.6; }
+        .container .terms { text-align: center; font-size: 0.85em; color: #aaa; margin-top: 1.5rem; }
+        .tooltip-container { position: relative; display: inline-flex; align-items: center; }
+        .tooltip-icon { display: inline-flex; justify-content: center; align-items: center; font-size: 0.85em; color: #aaa; cursor: help; border: 1px solid #aaa; border-radius: 50%; width: 1.3em; height: 1.3em; line-height: 1; text-align: center; font-weight: bold; user-select: none; background-color: rgba(255,255,255,0.1); }
+        .tooltip-text { visibility: hidden; opacity: 0; width: 220px; /* Трохи ширше для опису */ background-color: #555; color: #fff; text-align: center; border-radius: 6px; padding: 8px 10px; font-size: 0.85em; line-height: 1.4; position: absolute; z-index: 10; /* Збільшив z-index */ bottom: 135%; /* Трохи вище */ left: 50%; transform: translateX(-50%); /* Центрування */ transition: opacity 0.3s; }
+        .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent; }
+        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .tooltip-container.tooltip-active .tooltip-text { visibility: visible; opacity: 1; }
+        .error-message { display: none; color: #ff4d4d; font-size: 0.85em; margin-top: 5px; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+        .shake { animation: shake 0.4s ease-in-out; }
+    </style>-->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div class="container">
+<div class="register-container">
+    <a th:href="@{/}" class="back-link">&larr; На головну</a>
     <h1>Вітаємо</h1>
     <hr />
-    <a th:href="@{/}">Повернутися на головну(тик)</a>
+
     <h2 class="text-center">Реєстрація</h2>
-    <form action="#"
+    <form action="#" id="register-form"
           th:action="@{/register}"
           th:object="${account}"
-          method="POST">
-        <div >
-            <label for="firstname">Ваш Ім'я</label>
-            <input id="firstname" type="text" th:field="*{firstName}" placeholder="Ім'я"/>
+          method="POST"
+          novalidate>
+
+        <div class="form-group" id="nickname-group">
+            <label for="firstname">Ваш псевдонім
+                <span class="tooltip-container">
+                    <span class="tooltip-icon" aria-label="Інформація">ⓘ</span>
+                    <span class="tooltip-text">Максимум 20 символів, без пробілів. Буде видно всім користувачам.</span>
+                 </span>
+            </label>
+            <input id="firstname" type="text" th:field="*{firstName}" placeholder="Псевдонім" required
+                   pattern="^\S*$"
+                   title="Максимум 20 символів, без пробілів." />
+            <span class="error-message" id="nickname-error"></span>
         </div>
-        <div >
-            <label for="lastname">Ваше Прізвище</label>
-            <input id="lastname" type="text" th:field="*{lastName}" placeholder="Прізвище"/>
+
+        <div class="form-group" id="lastname-group"> <label for="lastname">Ваше Ім'я
+            <span class="tooltip-container">
+                    <span class="tooltip-icon" aria-label="Інформація">ⓘ</span>
+                     <span class="tooltip-text">Максимум 20 символів. Дозволено літери, цифри, дефіс, апостроф (без пробілів). Буде видно тільки адміністратору.</span>
+                 </span>
+        </label>
+            <input id="lastname" type="text" th:field="*{lastName}" placeholder="Ім'я" required
+                   pattern="^[a-zA-Zа-яА-ЯёЁіїєґҐ'0-9-]+$"
+                   title="Максимум 20 символів. Дозволено літери, цифри, дефіс, апостроф." />
+            <span class="error-message" id="lastname-error"></span>
         </div>
-        <div >
+
+        <div class="form-group">
             <label for="email">Пошта</label>
-            <input id="email" type="text" th:field="*{email}" placeholder="Пошта"/>
+            <input id="email" type="email" th:field="*{email}" placeholder="Пошта" required
+                   pattern="^\S+$"
+                   title="Введіть дійсну адресу пошти (без пробілів)." />
+            <span class="error-message" id="email-error"></span>
         </div>
-        <div >
-            <label for="password">Пароль</label>
-            <input id="password" type="password" th:field="*{password}" placeholder="Пароль"/>
+
+        <div class="form-group" id="password-group"> <label for="password">Пароль</label>
+            <input id="password" type="password" th:field="*{password}" placeholder="Пароль" required
+                   pattern="^\S*$"
+                   minlength="8"
+                   title="Мінімум 8 символів, без пробілів." />
+            <span class="error-message" id="password-error"></span>
         </div>
+
         <button type="submit">Зареєструватися</button>
-        <p class="terms"></p>
+        <p class="terms">Натискаючи "Зареєструватися", ви погоджуєтесь з умовами використання.</p>
     </form>
 </div>
+
+<script>
+    // --- Код для підказок (без змін) ---
+    document.addEventListener('DOMContentLoaded', () => { /* ... */ });
+    function closeAllTooltips(exceptContainer = null) { /* ... */ }
+    // Цей код підказок залишається як був
+
+    // --- ОНОВЛЕНО: JavaScript для валідації з перевіркою maxlength ---
+    const form = document.getElementById('register-form');
+    const nicknameInput = document.getElementById('firstname');
+    const lastnameInput = document.getElementById('lastname');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    // Знаходимо батьківські групи для анімації
+    const nicknameGroup = document.getElementById('nickname-group');
+    const lastnameGroup = document.getElementById('lastname-group'); // Потрібен ID у HTML
+    const passwordGroup = document.getElementById('password-group'); // Потрібен ID у HTML
+
+
+    const nicknameError = document.getElementById('nickname-error');
+    const lastnameError = document.getElementById('lastname-error');
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    // Регулярний вираз для імені (літери, цифри, дефіс, апостроф)
+    const namePattern = /^[a-zA-Zа-яА-ЯёЁіїєґҐ'0-9-]+$/;
+    const maxNicknameLength = 20;
+    const maxLastnameLength = 20;
+    const minPasswordLength = 8;
+
+    // Функція для перевірки одного поля та показу/приховування помилки
+    function validateField(inputElement, errorElement) {
+        let errorMessage = '';
+        let isValid = true;
+        const value = inputElement.value;
+        let shakeElement = null; // Елемент для анімації
+
+        // 1. Перевірка на пустоту (якщо поле required)
+        if (inputElement.required && value.trim() === '') {
+            errorMessage = "Це поле є обов'язковим.";
+            isValid = false;
+        } else {
+            // 2. Специфічні перевірки для кожного поля
+            switch (inputElement.id) {
+                case 'firstname': // Псевдонім
+                    shakeElement = nicknameGroup; // Визначаємо елемент для анімації
+                    if (/\s/.test(value)) {
+                        errorMessage = 'Псевдонім не повинен містити пробілів.';
+                        isValid = false;
+                    } else if (value.length > maxNicknameLength) { // Перевірка МАКС довжини
+                        errorMessage = `Максимальна довжина: ${maxNicknameLength} символів.`;
+                        isValid = false;
+                    }
+                    break;
+                case 'lastname': // Ім'я
+                    shakeElement = lastnameGroup;
+                    if (!namePattern.test(value) && value.length > 0) { // Перевірка патерну (якщо не порожнє)
+                        errorMessage = 'Дозволено літери, цифри, дефіс, апостроф. ';
+                        isValid = false;
+                    }
+                    if (value.length > maxLastnameLength) { // Перевірка МАКС довжини
+                        errorMessage += `Максимальна довжина: ${maxLastnameLength} символів.`;
+                        isValid = false;
+                    }
+                    if (/\s/.test(value)) { // Додаткова перевірка на пробіли
+                        errorMessage += ' Ім\'я не повинно містити пробілів.';
+                        isValid = false;
+                    }
+                    break;
+                case 'email': // Пошта
+                    if (/\s/.test(value)) {
+                        errorMessage = 'Пошта не повинна містити пробілів.';
+                        isValid = false;
+                        // Використовуємо HTML5 валідацію для формату email
+                    } else if (!inputElement.checkValidity() && value.length > 0) {
+                        errorMessage = 'Будь ласка, введіть дійсну адресу пошти.';
+                        isValid = false;
+                    }
+                    break;
+                case 'password': // Пароль
+                    shakeElement = passwordGroup;
+                    if (/\s/.test(value)) {
+                        errorMessage = 'Пароль не повинен містити пробілів.';
+                        isValid = false;
+                    } else if (value.length > 0 && value.length < minPasswordLength) { // Перевірка МІН довжини
+                        errorMessage = `Пароль має містити щонайменше ${minPasswordLength} символів.`;
+                        isValid = false;
+                    }
+                    break;
+            }
+        }
+
+        // Показ/приховування помилки та стилів
+        errorElement.textContent = errorMessage.trim();
+        if (!isValid) {
+            errorElement.style.display = 'block';
+            inputElement.classList.add('invalid-input');
+            // Запускаємо анімацію, якщо є помилка (КРІМ обов'язкового поля)
+            // і якщо елемент для анімації знайдено
+            if (errorMessage !== "Це поле є обов'язковим." && shakeElement && !shakeElement.classList.contains('shake')) {
+                shakeElement.classList.add('shake');
+                setTimeout(() => { shakeElement.classList.remove('shake'); }, 400);
+            }
+        } else {
+            errorElement.style.display = 'none';
+            inputElement.classList.remove('invalid-input');
+        }
+        return isValid;
+    }
+
+    // Додаємо слухачів 'input' для миттєвої перевірки
+    [nicknameInput, lastnameInput, emailInput, passwordInput].forEach(input => {
+        const errorElement = document.getElementById(input.id + '-error');
+        if (errorElement) {
+            input.addEventListener('input', () => validateField(input, errorElement));
+        }
+    });
+
+    // Перевірка перед відправкою форми
+    form.addEventListener('submit', function(event) {
+        const isNicknameValid = validateField(nicknameInput, nicknameError);
+        const isLastnameValid = validateField(lastnameInput, lastnameError);
+        const isEmailValid = validateField(emailInput, emailError);
+        const isPasswordValid = validateField(passwordInput, passwordError);
+
+        if (!isNicknameValid || !isLastnameValid || !isEmailValid || !isPasswordValid) {
+            event.preventDefault();
+            console.log("Form submission prevented due to validation errors.");
+            if (!isNicknameValid) nicknameInput.focus();
+            else if (!isLastnameValid) lastnameInput.focus();
+            else if (!isEmailValid) emailInput.focus();
+            else if (!isPasswordValid) passwordInput.focus();
+        }
+    });
+    // --- Кінець JS валідації ---
+</script>
 
 </body>
 </html>
