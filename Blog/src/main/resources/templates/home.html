@@ -75,6 +75,17 @@
             background-color: #BB86FC;
             color: #121212;
         }
+
+        /* Стилі для посилання на поточного користувача */
+        .header-nav .current-user-link {
+            font-weight: bold;
+            color: #16ceed;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+        .header-nav .current-user-link:hover {
+            color: #03DAC6;
+        }
         /* --- Кінець стилів для хедера --- */
 
 
@@ -84,7 +95,8 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 800px;
+            /* --- ЗМІНЕНО max-width --- */
+            max-width: 1100px;
             margin: 2rem auto;
         }
 
@@ -100,22 +112,37 @@
             margin: 2rem 0;
         }
 
+        /* --- ОНОВЛЕНО: Стилі для контейнера постів (Grid Layout) --- */
         .posts-container {
             margin-top: 2rem;
+            display: grid; /* Вмикаємо Grid */
+            /* Колонки: авто-розміщення, мін. 300px, макс. 1fr (рівна частина) */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; /* Відстань між картками */
+            align-items: start; /* Вирівнювання карток по верху */
         }
+        /* --- КІНЕЦЬ ОНОВЛЕННЯ --- */
 
-        .post {
+
+        .post { /* Стилі для окремої картки поста */
             background-color: #2C2C2C;
             padding: 1.5rem;
             border-radius: 10px;
-            margin-bottom: 2rem;
+            /* ЗАБРАНО margin-bottom, тепер відстань контролюється 'gap' в grid */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            display: flex; /* Додано для кращого контролю внутрішніх елементів */
-            flex-direction: column; /* Елементи розташовуються вертикально */
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Ефект при наведенні */
+        }
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
         }
 
         .post h2 {
             margin-top: 0;
+            margin-bottom: 0.8rem; /* Додав відступ знизу для заголовка */
+            font-size: 1.3em; /* Зробив заголовок в картці трохи більшим */
         }
 
         .post h2 a {
@@ -142,22 +169,23 @@
         }
 
 
-        /* --- Оновлені стилі для "Читати далі / Згорнути" --- */
+        /* Стилі для "Читати далі / Згорнути" */
         .post-body-container {
-            max-height: 120px; /* Початкова максимальна висота */
+            max-height: 120px;
             overflow: hidden;
             position: relative;
             transition: max-height 0.4s ease-out;
             margin-top: 1rem;
-            margin-bottom: 0.8rem; /* Відступ знизу перед кнопкою */
+            margin-bottom: 0.8rem;
             line-height: 1.6;
-            min-height: 40px; /* Мінімальна висота (напр. 2 рядки) */
+            min-height: 40px;
+            flex-grow: 1; /* Дозволяє текстовому блоку зайняти доступне місце в картці */
         }
 
         .post-body-container.expanded {
-            max-height: 5000px; /* Достатньо велика висота */
+            max-height: 5000px;
             transition: max-height 0.6s ease-in;
-            min-height: 40px; /* Залишаємо мін. висоту */
+            min-height: 40px;
         }
 
         p.post-body {
@@ -167,29 +195,24 @@
             overflow-wrap: break-word;
         }
 
-        /* ВИДАЛЕНО Градієнт */
-        /* .post-body-container:not(.expanded)::after { ... } */
-
         .read-more-btn {
-            /* ДОДАНО: Сховати кнопку за замовчуванням */
             display: none;
-            /* -------------------------------------- */
             background-color: transparent;
             border: 1px solid #BB86FC;
             color: #BB86FC;
             padding: 0.3rem 0.8rem;
             cursor: pointer;
-            margin-top: auto; /* Притискає до низу, якщо є місце */
+            margin-top: auto; /* Притискає до низу */
             border-radius: 5px;
             font-size: 0.9em;
             transition: background-color 0.3s, color 0.3s;
-            align-self: flex-start; /* Не розтягувати кнопку */
+            align-self: flex-start;
         }
         .read-more-btn:hover {
             background-color: #BB86FC;
             color: #121212;
         }
-        /* --- Кінець стилів для "Читати далі / Згорнути" --- */
+        /* --- Кінець стилів --- */
 
 
         /* Кнопки прокрутки */
@@ -236,7 +259,16 @@
             <a th:href="@{/login}">Вхід</a>
         </div>
         <div sec:authorize="isAuthenticated()">
-            <span>Привіт, <b sec:authentication="name">Username</b></span>
+             <span>Привіт,
+                <a th:if="${currentUserAccount != null}"
+                   th:href="@{'/author/' + ${currentUserAccount.id}}"
+                   th:text="${currentUserAccount.firstName != null ? currentUserAccount.firstName : #authentication.principal.username}"
+                   class="current-user-link">
+                </a>
+                <b th:unless="${currentUserAccount != null}"
+                   sec:authentication="name"
+                   class="current-user-link">Username</b>
+            </span>
             <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>
@@ -255,7 +287,8 @@
     <div class="posts-container">
         <div class="post" th:each="post : ${posts}">
             <h2><a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Заголовок поста</a></h2>
-            <h5>Автор: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} + ' ' + ${post.account.lastName}">Ім'я Прізвище</a></h5> <h5 th:if="${post.createdAt != null}" th:text="'Дата: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">Дата створення</h5>
+            <h5>Автор: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} ">Ім'я Прізвище</a></h5>
+            <h5 th:if="${post.createdAt != null}" th:text="'Дата: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">Дата створення</h5>
             <h5 th:if="${post.modifiedAt != null and !post.modifiedAt.isEqual(post.createdAt)}"
                 th:text="'Оновлено: ' + ${#temporals.format(post.modifiedAt, 'dd.MM.yyyy HH:mm')}">Дата Оновлення</h5>
 
@@ -265,8 +298,7 @@
             <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
 
         </div>
-        <div th:if="${#lists.isEmpty(posts)}" style="text-align: center; color: #888; margin-top: 2rem;">
-            <p>Ще немає жодного поста. Станьте першим!</p>
+        <div th:if="${#lists.isEmpty(posts)}" style="text-align: center; color: #888; margin-top: 2rem; grid-column: 1 / -1;"> <p>Ще немає жодного поста. Станьте першим!</p>
             <a th:href="@{/posts/create}" sec:authorize="isAuthenticated()" style="color: #BB86FC; text-decoration: none;">Створити пост</a>
             <p sec:authorize="!isAuthenticated()" style="margin-top: 0.5rem;">
                 <a th:href="@{/login}" style="color: #BB86FC; text-decoration: none;">Увійдіть</a> або
@@ -278,89 +310,40 @@
 </div>
 
 <script>
-    // --- Кнопки прокрутки (залишено без змін) ---
+    // --- Кнопки прокрутки ---
     var mybuttonTop = document.getElementById("myBtnTop");
     var mybuttonBottom = document.getElementById("myBtnBottom");
-    // ... (код scrollFunction, topFunction, bottomFunction залишається той самий) ...
     window.onscroll = function() {scrollFunction()};
-
     function scrollFunction() {
-        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-            mybuttonTop.style.display = "block";
-        } else {
-            mybuttonTop.style.display = "none";
-        }
-
-        if ((window.innerHeight + Math.ceil(window.scrollY)) >= document.body.offsetHeight - 100) {
-            mybuttonBottom.style.display = "none";
-        } else {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                mybuttonBottom.style.display = "block";
-            } else {
-                mybuttonBottom.style.display = "none";
-            }
-        }
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonTop.style.display = "block"; } else { mybuttonTop.style.display = "none"; }
+        if ((window.innerHeight + Math.ceil(window.scrollY)) >= document.body.offsetHeight - 100) { mybuttonBottom.style.display = "none"; } else { if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) { mybuttonBottom.style.display = "block"; } else { mybuttonBottom.style.display = "none"; } }
     }
+    function topFunction() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+    function bottomFunction() { window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); }
 
-    function topFunction() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function bottomFunction() {
-        window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-    }
-
-    // --- Функція "Читати далі / Згорнути" (залишено без змін, використовує .post) ---
+    // --- Функція "Читати далі / Згорнути" ---
     function toggleReadMore(button) {
         const postItem = button.closest('.post');
         if (!postItem) { console.error("Не вдалося знайти батьківський елемент '.post'!"); return; }
         const textContainer = postItem.querySelector('.post-body-container');
         if (!textContainer) { console.error("Не вдалося знайти контейнер '.post-body-container'!"); return; }
-
         const isNowExpanded = textContainer.classList.toggle('expanded');
         button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
-        // При згортанні можемо скинути max-height, щоб CSS знову застосувався
-        if (!isNowExpanded) {
-            textContainer.style.maxHeight = null;
-        }
+        if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } }
     }
 
-    // --- Оновлена логіка DOMContentLoaded ---
+    // --- Ініціалізація стану кнопок "Читати далі" ---
     document.addEventListener('DOMContentLoaded', () => {
-        // Обробка кожного поста на сторінці
-        document.querySelectorAll('.post').forEach(item => { // Використовуємо селектор '.post'
+        document.querySelectorAll('.post').forEach(item => {
             const container = item.querySelector('.post-body-container');
             const button = item.querySelector('.read-more-btn');
-
             if (container && button) {
-                // Отримуємо обчислений max-height з CSS
                 const computedStyle = window.getComputedStyle(container);
-                // Важливо: перевіряємо, чи max-height не 'none', перш ніж парсити
-                let maxHeight = 9999; // Велике значення за замовчуванням
-                if (computedStyle.maxHeight !== 'none') {
-                    maxHeight = parseInt(computedStyle.maxHeight, 10);
-                }
-
-                // Перевіряємо, чи повна висота контенту більша за максимальну (з допуском)
-                if (container.scrollHeight > (maxHeight + 2)) {
-                    // Якщо текст довший - показуємо кнопку
-                    button.style.display = 'inline-block'; // Або 'block'
-                } else {
-                    // Якщо текст короткий:
-                    // 1. Кнопка залишається схованою (display: none з CSS)
-                    // 2. Знімаємо обмеження max-height, щоб контейнер мав природну висоту
-                    container.style.maxHeight = 'none';
-                    // 3. Можна додати клас, щоб прибрати інші ефекти для коротких постів (напр., ::after)
-                    // container.classList.add('is-short');
-                }
+                let maxHeight = 9999;
+                if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') { maxHeight = parseInt(computedStyle.maxHeight, 10); } else { if (computedStyle.minHeight && computedStyle.minHeight !== 'none') { maxHeight = parseInt(computedStyle.minHeight, 10); } else { maxHeight = 40; } }
+                if (container.scrollHeight > (maxHeight + 2)) { button.style.display = 'inline-block'; } else { container.style.maxHeight = 'none'; }
             }
         });
-
-        // Додаємо обробник кліку до всіх кнопок (якщо функція toggleReadMore не глобальна)
-        // Якщо функція toggleReadMore визначена поза DOMContentLoaded, цей блок не потрібен
-        // document.querySelectorAll('.read-more-btn').forEach(btn => {
-        //     btn.addEventListener('click', () => toggleReadMore(btn));
-        // });
     });
 </script>
 

@@ -1,113 +1,224 @@
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
+
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+
     <meta charset="utf-8">
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Post</title>
+
     <style>
+
         body {
+
             background-color: #121212;
+
             color: #E0E0E0;
+
             font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+
+
+
             margin: 0;
+
+            padding: 2rem 0;
+
         }
+
+
 
         .container {
+
             background-color: #1E1E1E;
+
             padding: 2rem;
+
             border-radius: 10px;
+
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+
             width: 90%;
+
             max-width: 600px;
+
+            margin: 0 auto;
+
         }
+
+
 
         h2.text-center {
+
             text-align: center;
+
             color: #BB86FC;
+
             margin-bottom: 1rem;
+
             /* Додано для перенесення довгих заголовків */
+
             word-break: break-word;
+
             overflow-wrap: break-word;
+
         }
+
+
 
         h5 {
+
             color: #03DAC6;
+
             margin: 0.5rem 0;
+
         }
+
+
 
         h5.text-muted {
+
             color: #757575;
+
         }
+
+
 
         p { /* Стилі для ВСІХ параграфів */
+
             line-height: 1.6;
+
             margin: 1rem 0;
+
             /* --- ДОДАНО ЦІ ВЛАСТИВОСТІ --- */
-            white-space: pre-wrap;      /* Зберігає пробіли/переноси І дозволяє автоперенос */
-            overflow-wrap: break-word;  /* Дозволяє розривати довгі слова */
-            word-wrap: break-word;      /* Те саме, що overflow-wrap */
+
+            white-space: pre-wrap; /* Зберігає пробіли/переноси І дозволяє автоперенос */
+
+            overflow-wrap: break-word; /* Дозволяє розривати довгі слова */
+
+            word-wrap: break-word; /* Те саме, що overflow-wrap */
+
             /* --- КІНЕЦЬ ДОДАНИХ ВЛАСТИВОСТЕЙ --- */
+
         }
+
+
 
         a {
+
             color: #BB86FC;
+
             text-decoration: none;
+
             transition: color 0.3s ease;
+
         }
+
+
 
         a:hover {
+
             color: #03DAC6;
+
         }
+
+
 
         ul {
+
             list-style: none;
+
             padding: 0;
+
             display: flex;
+
             justify-content: space-around;
+
             margin-top: 1.5rem;
+
         }
+
+
 
         ul li {
+
             margin: 0;
+
         }
+
+
 
         ul li a {
+
             border: 1px solid #BB86FC;
+
             padding: 0.5rem 1rem;
+
             border-radius: 5px;
+
             transition: background-color 0.3s ease, color 0.3s ease;
+
         }
 
+
+
         ul li a:hover {
+
             background-color: #03DAC6;
+
             color: #121212;
+
         }
+
+
 
     </style>
 
+
+
 </head>
+
 <body>
+
 <div class="container">
+
     <a th:href="@{/}">Home</a>
+
     <div class="post">
+
         <h2 class="text-center" th:text="${post.title}">Title</h2>
-        <h5>Автор блогу: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} + ' ' + ${post.account.lastName}">Author Name</a></h5>
+
+        <h5>Автор блогу: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName}">Author Name</a></h5>
+
         <h5 class="text-muted" th:if="${post.createdAt}" th:text="'Дата: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}">Дата створення</h5>
+
         <h5 th:if="${post.modifiedAt != null and !post.modifiedAt.isEqual(post.createdAt)}"
+
             th:text="'Оновлено: ' + ${#temporals.format(post.modifiedAt, 'dd.MM.yyyy HH:mm')}">Дата Оновл</h5>
+
         <p th:text="${post.body}">Текст публікації</p>
+
     </div>
-    <ul sec:authorize="isAuthenticated()">
-        <li><a th:href="@{'/posts/' + ${post.id} + '/edit'}">Edit</a></li>
-        <li><a th:href="@{'/posts/' + ${post.id} + '/delete'}">Delete</a></li>
+
+    <ul class="action-list" th:if="${canEditDelete}">
+        <li>
+            <a th:href="@{'/posts/' + ${post.id} + '/edit'}">Редагувати</a>
+        </li>
+        <li>
+            <a th:href="@{'/posts/' + ${post.id} + '/delete'}">Видалити</a>
+        </li>
     </ul>
+
 </div>
 
+
+
 </body>
+
 </html>

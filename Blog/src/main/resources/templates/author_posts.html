@@ -205,50 +205,74 @@
 </div>
 
 <script>
-    // Функція перемикання стану
+    // --- Функція перемикання стану "Читати далі / Згорнути" ---
     function toggleReadMore(button) {
+        // Знаходимо батьківський елемент картки поста
         const postItem = button.closest('.author-post-item');
-        if (!postItem) return;
+        if (!postItem) {
+            console.error("Не вдалося знайти батьківський елемент '.author-post-item' для кнопки!");
+            return;
+        }
+        // Знаходимо контейнер тексту всередині картки
         const textContainer = postItem.querySelector('.post-body-container');
-        if (!textContainer) return;
+        if (!textContainer) {
+            console.error("Не вдалося знайти контейнер '.post-body-container' всередині картки!");
+            return;
+        }
 
+        // Перемикаємо клас 'expanded'
         const isNowExpanded = textContainer.classList.toggle('expanded');
+        // Змінюємо текст кнопки
         button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
-        // При згортанні повертаємо max-height (якщо він раптом був змінений)
+
+
+
         if (!isNowExpanded) {
-            textContainer.style.maxHeight = null; // Дозволяє CSS знову керувати max-height
+            textContainer.style.maxHeight = null;
+        } else {
+            // Якщо розгорнули і раніше був встановлений max-height = 'none', прибираємо його
+            // щоб CSS правило для .expanded спрацювало
+            if (textContainer.style.maxHeight === 'none') {
+                textContainer.style.maxHeight = null;
+            }
         }
     }
 
-    // Обробка після завантаження сторінки
+    // --- Обробка після завантаження сторінки: показ/приховування кнопки ---
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.author-post-item').forEach(item => {
             const container = item.querySelector('.post-body-container');
             const button = item.querySelector('.read-more-btn');
 
             if (container && button) {
-                // Отримуємо обчислений max-height з CSS (важливо!)
+                // Отримуємо обчислену max-height з CSS
                 const computedStyle = window.getComputedStyle(container);
-                const maxHeight = parseInt(computedStyle.maxHeight, 10);
-
-                // Перевіряємо, чи повна висота контенту більша за максимальну висоту
-                // Додаємо невеликий допуск (2px)
-                if (container.scrollHeight > (maxHeight + 2)) {
-                    // Якщо текст довший за контейнер - показуємо кнопку
-                    button.style.display = 'inline-block'; // Або 'block', якщо хочете на всю ширину
+                // Важливо: перевіряємо, чи max-height не 'none', перш ніж парсити
+                let maxHeight = 9999; // Велике значення за замовчуванням
+                // Перевіряємо, чи значення не є порожнім рядком або 'none'
+                if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') {
+                    maxHeight = parseInt(computedStyle.maxHeight, 10);
                 } else {
-                    // Якщо текст короткий - кнопка залишається схованою (display: none з CSS)
-                    // І прибираємо max-height, щоб короткий текст не обрізався зверху/знизу
+                    // Якщо max-height не встановлено або 'none', використовуємо висоту min-height як поріг
+                    if (computedStyle.minHeight && computedStyle.minHeight !== 'none') {
+                        maxHeight = parseInt(computedStyle.minHeight, 10);
+                    } else {
+                        maxHeight = 40; // Або якесь інше базове значення, якщо min-height теж немає
+                    }
+                }
+
+
+                // Перевіряємо, чи повна висота контенту більша за максимальну висоту (з допуском)
+                if (container.scrollHeight > (maxHeight + 2)) {
+                    // Якщо текст довший - показуємо кнопку
+                    button.style.display = 'inline-block';
+                } else {
+                    // Якщо текст короткий:
+                    // 1. Кнопка залишається схованою (display: none з CSS)
+                    // 2. Знімаємо обмеження max-height, щоб контейнер мав природну висоту
                     container.style.maxHeight = 'none';
-                    // Можна також додати клас, щоб прибрати інші ефекти, якщо потрібно
-                    // container.classList.add('is-short');
                 }
             }
-        });
-
-        // Додаємо обробник кліку до всіх кнопок (можна винести з DOMContentLoaded, якщо функція toggleReadMore глобальна)
-        document.querySelectorAll('.read-more-btn').forEach(btn => {
-            btn.addEventListener('click', () => toggleReadMore(btn)); // Викликаємо існуючу функцію
         });
     });
 </script>

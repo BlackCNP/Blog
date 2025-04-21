@@ -14,6 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API документація")
                         .version("1.0")
-                        .description("Документація API для проекту курсова v4"));
+                        .description("Документація"));
     }
 }

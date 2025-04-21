@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                     auth.requestMatchers(antMatcher("/swagger-ui/")).permitAll();
                     auth.requestMatchers(antMatcher("/posts/**")).permitAll();
                     auth.requestMatchers(antMatcher("/pomilka")).permitAll();
-                    auth.requestMatchers(antMatcher("/author_posts.html")).permitAll();
+                    auth.requestMatchers(antMatcher("/author_posts/**")).permitAll();
                   //  auth.requestMatchers(antMatcher("/pomilka/**")).permitAll();
                     auth.requestMatchers(PathRequest.toH2Console()).permitAll();
                     auth.anyRequest().authenticated();
