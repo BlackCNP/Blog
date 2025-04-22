@@ -8,7 +8,23 @@
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title>Home</title>
+    <script>
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                    // Додаємо клас до <html>, оскільки він доступний раніше за <body>
+                    document.documentElement.classList.add('light-theme');
+                }
+                // Якщо тема 'dark' або не встановлена, нічого не робимо,
+                // оскільки темна тема є стандартною в CSS
+            } catch (e) {
+                console.error("Помилка застосування теми з localStorage", e);
+            }
+        })();
+    </script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-switcher.js}" defer></script>
 <!--
 <style>
          /* -&#45;&#45; Існуючі стилі -&#45;&#45; */
@@ -124,7 +140,14 @@
             <span>Привіт, <a th:if="${currentUserAccount != null}" th:href="@{'/author/' + ${currentUserAccount.id}}" th:text="${currentUserAccount.firstName != null ? currentUserAccount.firstName : #authentication.principal.username}" class="current-user-link">
             </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
-            </span> <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">&#x2764;&#xfe0f; Вподобане</a> <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a> <form class="#" th:action="@{/logout}" method="POST" style="display: inline;"> <button type="submit">Вийти</button> </form> </div> </nav>
+            </span> <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">&#x2764;&#xfe0f; Вподобане</a> <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
+            <form class="#" th:action="@{/logout}" method="POST" style="display: inline;"> <button type="submit">Вийти</button>
+            </form>
+
+        </div>
+
+        </nav>
+    <button id="theme-toggle" title="Перемикнути тему">🌙</button>
 </header>
 
 <button onclick="topFunction()" id="myBtnTop" title="Go to top">▲</button>

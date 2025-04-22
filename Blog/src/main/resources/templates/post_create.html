@@ -93,7 +93,7 @@
     </style>
 -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-
+    <script th:src="@{/js/theme-switcher.js}" defer></script>
 </head>
 <body class="center-form"> <div class="form-container"> <a th:href="@{/}" class="back-link-form">Home</a> <form action="#"
                                                                                                                 th:action="@{'/posts/create'}"
@@ -111,6 +111,7 @@
         <textarea id="new-post-body" th:field="*{body}"></textarea>
     </div>
     <button type="submit">Опублікувати</button>
+
 </form>
 </div>
 <script>

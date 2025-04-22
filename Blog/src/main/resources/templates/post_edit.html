@@ -104,6 +104,7 @@
         }
     </style>-->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/theme-switcher.js}" defer></script>
 </head>
 <body class="center-form"> <div class="form-container"> <a th:href="@{/posts/{id}(id=${post.id})}" class="back-link-form">&larr; Назад до поста</a> <form action="#"
                                                                                                                                                           th:action="@{'/posts/{id}'(id=${post.id})}"

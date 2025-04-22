@@ -7,7 +7,21 @@
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title th:text="${pageTitle} ?: 'Вподобані Публікації'">Вподобані Публікації</title>
-
+    <script>
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                    // Додаємо клас до <html>, оскільки він доступний раніше за <body>
+                    document.documentElement.classList.add('light-theme');
+                }
+                // Якщо тема 'dark' або не встановлена, нічого не робимо,
+                // оскільки темна тема є стандартною в CSS
+            } catch (e) {
+                console.error("Помилка застосування теми з localStorage", e);
+            }
+        })();
+    </script>
    <!-- <style>
         /* -&#45;&#45; Базові стилі та хедер (скопійовано з home.html) -&#45;&#45; */
         body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6; padding-top: 65px; }
@@ -87,7 +101,7 @@
         .no-posts-message { text-align: center; color: #888; margin-top: 3rem; font-size: 1.1em; grid-column: 1 / -1; }
 
     </style>-->
-
+    <script th:src="@{/js/theme-switcher.js}" defer></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 
 
@@ -118,6 +132,8 @@
             </form>
         </div>
     </nav>
+    <button id="theme-toggle" title="Перемикнути тему">🌙</button>
+
 </header>
 
 <div class="container">
