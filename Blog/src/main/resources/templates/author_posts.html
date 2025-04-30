@@ -8,15 +8,15 @@
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title>Публікації користувача <span th:text="${author.firstName} + ' ' + ${author.lastName}">Ім'я Автора</span></title>
     <script>
+        // застосування теми з localStorage
         (function() {
             try {
                 var theme = localStorage.getItem('theme');
                 if (theme === 'light') {
-                    // Додаємо клас до <html>, оскільки він доступний раніше за <body>
+
                     document.documentElement.classList.add('light-theme');
                 }
-                // Якщо тема 'dark' або не встановлена, нічого не робимо,
-                // оскільки темна тема є стандартною в CSS
+
             } catch (e) {
                 console.error("Помилка застосування теми з localStorage", e);
             }
@@ -24,66 +24,7 @@
     </script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/js/theme-switcher.js}" defer></script>
-  <!-- <<style>
-        /* -&#45;&#45; Існуючі стилі (body, container, grid, item, read-more etc.) -&#45;&#45; */
-        body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6;  padding-top: 65px; }
-        .sticky-header { /* Стилі для хедера, скопійовані з home.html */
-            position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
-        }
-        .header-left a { color: #BB86FC; text-decoration: none; font-size: 1.2em; font-weight: bold; }
-        .header-nav a, .header-nav span, .header-nav form button { color: #E0E0E0; text-decoration: none; margin-left: 1.2rem; font-size: 0.95em; vertical-align: middle; }
-        .header-nav a:hover, .header-nav form button:hover { color: #03DAC6; }
-        .header-nav form { display: inline; margin: 0; padding: 0; }
-        .header-nav form button { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
-        .header-nav a.create-post-btn { border: 1px solid #BB86FC; padding: 0.4rem 0.8rem; border-radius: 5px; transition: background-color 0.3s ease, color 0.3s ease; }
-        .header-nav a.create-post-btn:hover { background-color: #BB86FC; color: #121212; }
-        .header-nav .current-user-link { font-weight: bold; color: #16ceed; font-size: 1.1em; transition: color 0.3s ease; }
-        .header-nav .current-user-link:hover { color: #03DAC6; }
-        .container { width: 90%; max-width: 1200px; margin: 2rem auto; padding: 2rem; background-color: #1E1E1E; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); }
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-        .page-title { color: #BB86FC; margin: 0; font-size: 1.8em; }
-        .back-button { display: inline-block; padding: 0.6rem 1.2rem; background-color: #BB86FC; color: #121212; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s ease, color 0.3s ease; border: none; cursor: pointer; }
-        .back-button:hover { background-color: #03DAC6; color: #1E1E1E; }
-        .author-posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; align-items: start; }
-        .author-post-item { background-color: #2C2C2C; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
-        .author-post-item:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); }
-        .author-post-item h3 { margin-top: 0; margin-bottom: 0.8rem; font-size: 1.3em; word-break: break-word; }
-        .author-post-item h3 a { color: #BB86FC; text-decoration: none; transition: color 0.2s ease; }
-        .author-post-item h3 a:hover { color: #03DAC6; }
-        .post-body-container { max-height: 80px; overflow: hidden; position: relative; transition: max-height 0.4s ease-out; margin-bottom: 0.8rem; min-height: 40px; /* ЗАБРАНО flex-grow */ }
-        .post-body-container.expanded { max-height: 1000px; min-height: 40px; }
-        p.post-body { color: #C0C0C0; margin: 0; word-break: break-word; overflow-wrap: break-word; }
-        .read-more-btn { display: none; background-color: transparent; border: 1px solid #BB86FC; color: #BB86FC; padding: 0.3rem 0.8rem; cursor: pointer; /* ЗАБРАНО margin-top: auto; */ margin-top: 0.8rem; border-radius: 5px; font-size: 0.9em; transition: background-color 0.3s, color 0.3s; align-self: flex-start; }
-        .read-more-btn:hover { background-color: #BB86FC; color: #121212; }
-        .post-meta { font-size: 0.85em; color: #888; text-align: right; margin-top: 1rem; } /* Відступ для дати */
-        .no-posts-message { text-align: center; color: #888; margin-top: 3rem; font-size: 1.1em; grid-column: 1 / -1; } /* Повідомлення займає весь рядок сітки */
-        hr { border: 0; border-top: 1px solid #333; margin: 2rem 0; }
 
-        /* -&#45;&#45; ДОДАНО: Стилі для секції лайків (ідентичні home.html) -&#45;&#45; */
-        .like-section {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem; /* Відступ зверху */
-            margin-left: auto; /* Притискає до правого краю картки */
-            padding-top: 0.5rem; /* Невеликий відступ зверху, якщо є кнопка ReadMore */
-        }
-
-        .like-button {
-            background: none; border: none; padding: 0; cursor: pointer;
-            font-size: 1.4em; color: #666; transition: color 0.2s, transform 0.2s;
-            line-height: 1;
-        }
-        .like-button.interactive:hover { color: #BB86FC; }
-        .like-button.interactive:active { transform: scale(1.2); }
-        .like-button.liked { color: #ff4d4d; }
-        .like-button.liked:hover { color: #ff2a2a; }
-        .like-button:disabled { cursor: default; opacity: 0.5; }
-
-        .like-count { font-size: 0.9em; color: #aaa; min-width: 1em; text-align: right; }
-        /* -&#45;&#45; Кінець стилів для лайків -&#45;&#45; */
-
-    </style>-->
 </head>
 <body>
 <header class="sticky-header">
@@ -104,8 +45,8 @@
                 </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
             </span>
-            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">★ Вподобане</a>
-            <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
+            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #1660ed;">&#x2764;&#xfe0f; Вподобане</a>
+            <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>
             </form>
@@ -126,7 +67,7 @@
             <div class="post" th:each="post : ${posts}">
                 <div> <h3><a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Заголовок поста</a></h3>
                     <div class="post-body-container">
-                        <p class="post-body" th:text="${post.body}">Тіло публікації...</p>
+                        <p class="post-body" th:text="${post.body}">Тіло блогу...</p>
                     </div>
                     <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
                 </div>
@@ -152,96 +93,41 @@
                 </div> </div> </div> </div>
 
     <div th:if="${#lists.isEmpty(posts)}" class="no-posts-message">
-        <p>Автор ще не опублікував жодного поста.</p>
+        <p>Автор ще не написав жодного блогу.</p>
     </div>
 
 </div>
 
-<!--<script>
-    // -&#45;&#45; Функція "Читати далі / Згорнути" (залишено без змін) -&#45;&#45;
-    function toggleReadMore(button) { /* ... код ... */ const postItem = button.closest('.author-post-item'); if (!postItem) return; const textContainer = postItem.querySelector('.post-body-container'); if (!textContainer) return; const isNowExpanded = textContainer.classList.toggle('expanded'); button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі'; if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } } }
 
-    // -&#45;&#45; JavaScript для лайків (ідентичний home.html) -&#45;&#45;
-    document.addEventListener('DOMContentLoaded', () => {
-        // Ініціалізація кнопки "Читати далі" (тільки для цієї сторінки)
-        document.querySelectorAll('.author-post-item').forEach(item => {
-            const container = item.querySelector('.post-body-container');
-            const button = item.querySelector('.read-more-btn');
-            if (container && button) {
-                const computedStyle = window.getComputedStyle(container);
-                let maxHeight = 9999;
-                if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') { maxHeight = parseInt(computedStyle.maxHeight, 10); } else { if (computedStyle.minHeight && computedStyle.minHeight !== 'none') { maxHeight = parseInt(computedStyle.minHeight, 10); } else { maxHeight = 40; } }
-                if (container.scrollHeight > (maxHeight + 2)) { button.style.display = 'inline-block'; } else { container.style.maxHeight = 'none'; }
-            }
-        });
-
-        // Делегування подій для лайків
-        document.addEventListener('click', function(event) {
-            const likeButton = event.target.closest('.like-button.interactive');
-            if (likeButton) {
-                handleLikeClick(likeButton);
-            }
-        });
-    });
-
-    async function handleLikeClick(button) {
-        const postId = button.dataset.postId;
-        const isLiked = button.dataset.liked === 'true';
-        const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
-        const headers = { 'Accept': 'application/json' };
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
-        const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
-        if (csrfHeader && csrfToken) { headers[csrfHeader] = csrfToken; }
-        try {
-            const response = await fetch(apiUrl, { method: 'POST', headers: headers });
-            if (!response.ok) { const errorData = await response.json().catch(() => ({ error: 'Server error: ' + response.status })); throw new Error(errorData.error || 'HTTP error'); }
-            const data = await response.json();
-            if (data.success) {
-                const likeCountSpan = button.nextElementSibling;
-                if (likeCountSpan && likeCountSpan.classList.contains('like-count')) { likeCountSpan.textContent = data.likeCount; }
-                button.classList.toggle('liked');
-                button.dataset.liked = data.userLiked;
-                const iconSpan = button.querySelector('span');
-                if(iconSpan) { iconSpan.textContent = data.userLiked ? '♥' : '♡'; }
-            } else { throw new Error(data.error || 'Unknown server error'); }
-        } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
-    }
-    // -&#45;&#45; Кінець JavaScript -&#45;&#45;
-</script>-->
 <script>
-    // --- Функція "Читати далі / Згорнути" (ОНОВЛЕНО СЕЛЕКТОР) ---
+    // чит далі
     function toggleReadMore(button) {
-        const postItem = button.closest('.post'); // <--- Змінено тут
+        const postItem = button.closest('.post');
         if (!postItem) return;
         const textContainer = postItem.querySelector('.post-body-container');
         if (!textContainer) return;
         const isNowExpanded = textContainer.classList.toggle('expanded');
         button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
-        // Необов'язкове скидання стилю, якщо потрібно, щоб CSS знову обмежував висоту
-        // if (!isNowExpanded) {
-        //     textContainer.style.maxHeight = null;
-        // }
+
     }
 
-    // --- JavaScript для лайків та ініціалізації "Читати далі" (ОНОВЛЕНО СЕЛЕКТОР) ---
+    //
     document.addEventListener('DOMContentLoaded', () => {
         // Ініціалізація кнопки "Читати далі"
-        document.querySelectorAll('.post').forEach(item => { // <--- Змінено тут
+        document.querySelectorAll('.post').forEach(item => {
             const container = item.querySelector('.post-body-container');
             const button = item.querySelector('.read-more-btn');
             if (container && button) {
-                // Перевіряємо, чи контент довший за максимальну висоту контейнера
-                // Додаємо невеликий допуск (+2 пікселі), щоб уникнути хибних спрацьовувань
-                if (container.scrollHeight > (container.clientHeight + 2) || container.scrollHeight > 80 ) { // 80 - це max-height з CSS
-                    button.style.display = 'inline-block'; // Показуємо кнопку
+
+                if (container.scrollHeight > (container.clientHeight + 2) || container.scrollHeight > 80 ) {
+                    button.style.display = 'inline-block';
                 } else {
-                    // Якщо контент короткий, можна прибрати обмеження висоти взагалі (необов'язково)
-                    // container.style.maxHeight = 'none';
+
                 }
             }
         });
 
-        // Делегування подій для лайків
+
         document.addEventListener('click', function(event) {
             const likeButton = event.target.closest('.like-button.interactive');
             if (likeButton) {
@@ -250,7 +136,7 @@
         });
     });
 
-    // Функція handleLikeClick залишається без змін
+
     async function handleLikeClick(button) {
         const postId = button.dataset.postId;
         const isLiked = button.dataset.liked === 'true';
@@ -273,7 +159,7 @@
             } else { throw new Error(data.error || 'Unknown server error'); }
         } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
     }
-    // --- Кінець JavaScript ---
+
 </script>
 </body>
 </html>

@@ -8,158 +8,23 @@
     <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
     <meta name="_csrf_token" th:content="${_csrf?.token}"/>
     <title th:text="${post.title} ?: 'Post'">Post</title>
+
     <script>
+        // застосування теми з localStorage
         (function() {
             try {
                 var theme = localStorage.getItem('theme');
                 if (theme === 'light') {
-                    // Додаємо клас до <html>, оскільки він доступний раніше за <body>
+
                     document.documentElement.classList.add('light-theme');
                 }
-                // Якщо тема 'dark' або не встановлена, нічого не робимо,
-                // оскільки темна тема є стандартною в CSS
+
             } catch (e) {
                 console.error("Помилка застосування теми з localStorage", e);
             }
         })();
     </script>
-    <!--
-    <style>
-    body { background-color: #121212; color: #E0E0E0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; line-height: 1.6;  padding-top: 65px; }
-    .sticky-header { /* Стилі для хедера, скопійовані з home.html */
-        position: fixed; top: 0; left: 0; width: 100%; background-color: #1E1E1E; padding: 0.8rem 1.5rem; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4); z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
-    }
-    .header-left a { color: #BB86FC; text-decoration: none; font-size: 1.2em; font-weight: bold; }
-    .header-nav a, .header-nav span, .header-nav form button { color: #E0E0E0; text-decoration: none; margin-left: 1.2rem; font-size: 0.95em; vertical-align: middle; }
-    .header-nav a:hover, .header-nav form button:hover { color: #03DAC6; }
-    .header-nav form { display: inline; margin: 0; padding: 0; }
-    .header-nav form button { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
-    .header-nav a.create-post-btn { border: 1px solid #BB86FC; padding: 0.4rem 0.8rem; border-radius: 5px; transition: background-color 0.3s ease, color 0.3s ease; }
-    .header-nav a.create-post-btn:hover { background-color: #BB86FC; color: #121212; }
-    .header-nav .current-user-link { font-weight: bold; color: #16ceed; font-size: 1.1em; transition: color 0.3s ease; }
-    .header-nav .current-user-link:hover { color: #03DAC6; }
 
-    .container {
-        background-color: #1E1E1E;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        width: 90%;
-        max-width: 700px;
-        margin: 2rem auto; /* Додано відступ зверху/знизу */
-    }
-
-    h2.text-center {
-        text-align: center;
-        color: #BB86FC;
-        margin-bottom: 1rem;
-        word-break: break-word;
-        overflow-wrap: break-word;
-    }
-
-    h5 {
-        color: #888; /* Змінив колір мета-інформації */
-        margin: 0.3rem 0;
-        font-size: 0.9em;
-    }
-
-    h5 a { /* Посилання на автора */
-        color: #03DAC6;
-        text-decoration: none;
-    }
-    h5 a:hover {
-        text-decoration: underline;
-    }
-
-    h5.text-muted { /* Для дати */
-        color: #757575;
-    }
-
-    p.post-body { /* Стилі для тіла поста */
-        line-height: 1.7;
-        margin: 1.5rem 0;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-        color: #E0E0E0; /* Основний колір тексту */
-    }
-
-    a {
-        color: #BB86FC;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    a:hover {
-        color: #03DAC6;
-    }
-
-    .home-link {
-        display: inline-block;
-        margin-bottom: 1.5rem;
-    }
-
-    /* Секція під постом (Лайки + Кнопки дій) */
-    .post-footer {
-        display: flex;
-        justify-content: space-between; /* Розділити лайки і кнопки */
-        align-items: center;
-        margin-top: 1.5rem;
-        border-top: 1px solid #333; /* Лінія розділення */
-        padding-top: 1.5rem;
-        flex-wrap: wrap; /* Перенос на малих екранах */
-        gap: 1rem;
-    }
-
-    /* Стилі для списку дій Edit/Delete */
-    .action-list {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        /* justify-content: flex-end; - тепер керується .post-footer */
-        gap: 1rem;
-        margin: 0; /* Забрано margin-top */
-    }
-
-    .action-list li {
-        margin: 0;
-    }
-
-    .action-list li a {
-        border: 1px solid #BB86FC;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        display: inline-block;
-    }
-
-    .action-list li a:hover {
-        background-color: #03DAC6;
-        color: #121212;
-    }
-
-    /* -&#45;&#45; ДОДАНО: Стилі для секції лайків (ідентичні home.html) -&#45;&#45; */
-    .like-section {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .like-button {
-        background: none; border: none; padding: 0; cursor: pointer;
-        font-size: 1.4em; color: #666; transition: color 0.2s, transform 0.2s;
-        line-height: 1;
-    }
-    .like-button.interactive:hover { color: #BB86FC; }
-    .like-button.interactive:active { transform: scale(1.2); }
-    .like-button.liked { color: #ff4d4d; }
-    .like-button.liked:hover { color: #ff2a2a; }
-    .like-button:disabled { cursor: default; opacity: 0.5; }
-
-    .like-count { font-size: 0.9em; color: #aaa; min-width: 1em; text-align: right; }
-    /* -&#45;&#45; Кінець стилів для лайків -&#45;&#45; */
-
-</style>-->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/js/theme-switcher.js}" defer></script>
 </head>
@@ -183,8 +48,8 @@
                 </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
             </span>
-            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #03DAC6;">★ Вподобане</a>
-            <a th:href="@{/posts/create}" class="create-post-btn">Створити Пост</a>
+            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #1660ed;">&#x2764;&#xfe0f; Вподобане</a>
+            <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>
             </form>
@@ -231,9 +96,9 @@
     </div> </div>
 
 <script>
-    // === JavaScript для обробки лайків ===
+    //   лайкb
     document.addEventListener('DOMContentLoaded', () => {
-        // Можна делегувати від .container або навіть document
+
         document.addEventListener('click', function(event) {
             const likeButton = event.target.closest('.like-button.interactive');
             if (likeButton) {
@@ -277,7 +142,7 @@
             alert('Помилка обробки лайка: ' + error.message);
         }
     }
-    // === Кінець JavaScript для лайків ===
+
 </script>
 
 </body>

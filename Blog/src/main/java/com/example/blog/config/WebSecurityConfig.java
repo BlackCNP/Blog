@@ -29,9 +29,9 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable) // Відключення CSRF (для H2 консолі та API, якщо немає токенів)
+                .csrf(AbstractHttpConfigurer::disable)// Відключення CSRF (для H2 консолі
                 .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable) // Дозволити H2 консоль в iframe
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -41,34 +41,34 @@ public class WebSecurityConfig {
                                 antMatcher("/webjars/**"),
                                 antMatcher("/"), // Головна сторінка
                                 antMatcher("/rss/**"),
-                                antMatcher("/register/**"), // Сторінка реєстрації
-                                antMatcher("/login"), // Сторінка логіну
-                                antMatcher("/h2-console/**"), // H2 консоль
-                                antMatcher("/swagger-ui/**"), // Swagger UI V3 (перевірте точний шлях)
-                                antMatcher("/v3/api-docs/**"), // Swagger JSON/YAML
-                                antMatcher("/posts/**"), // Всі сторінки постів (перегляд, створення GET)
-                                antMatcher("/pomilka"), // Сторінка помилки
+                                antMatcher("/register/**"),
+                                antMatcher("/login"),
+                                antMatcher("/h2-console/**"),
+                                antMatcher("/swagger-ui/**"), //
+                                antMatcher("/v3/api-docs/**"), //
+                                antMatcher("/posts/**"),
+                                antMatcher("/pomilka"),
 
                                 antMatcher("/author/**"),
 
                                 PathRequest.toH2Console() // Альтернативний спосіб дозволити H2
                         ).permitAll()
 
-                        .anyRequest().authenticated() // Всі інші запити вимагають автентифікації
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Кастомна сторінка логіну
-                        .loginProcessingUrl("/login") // URL для обробки логіну
-                        .usernameParameter("email") // Параметр для email
-                        .passwordParameter("password") // Параметр для паролю
-                        .defaultSuccessUrl("/", true) // Завжди редірект на головну після успішного входу
-                        .failureUrl("/login?error") // URL при помилці логіну
-                        .permitAll() // Дозволити всім доступ до сторінки логіну та обробки
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error")
+                        .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/?logout")
-                        .permitAll() // Дозволити всім вихід
+                        .permitAll()
                 );
 
         return http.build();

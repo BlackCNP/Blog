@@ -1,6 +1,6 @@
-/* ======================================== */
-/* ========== ЗАГАЛЬНІ СТИЛІ (з home.html) ========== */
-/* ======================================== */
+
+/*  ЗАГАЛЬНІ СТИЛІ  */
+
 :root {
     --bg-color: #121212;
     --text-color: #E0E0E0;
@@ -19,13 +19,13 @@
 }
 
 /* Світла тема */
-body.light-theme {
+html.light-theme {
     --bg-color: #f0f0f0;
     --text-color: #333;
     --header-bg: #ffffff;
     --post-bg: #ffffff;
     --link-color: #6200ea;
-    --link-hover: #03DAC6;
+    --link-hover: #097ed3;
     --button-bg: #6200ea;
     --button-text: #ffffff;
     --button-hover: #03DAC6;
@@ -34,6 +34,7 @@ body.light-theme {
     --border-color: #ccc;
     --muted-text: #666;
     --post-body-text: #555;
+
 }
 body {
     background-color: var(--bg-color);
@@ -42,10 +43,10 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    padding-top: 65px; /* Залишаємо відступ для фіксованого хедера */
+    padding-top: 65px;
 }
 
-/* --- Стилі фіксованого хедера (однакові для всіх сторінок) --- */
+/*  фіксований хедер  */
 .sticky-header {
     position: fixed;
     top: 0;
@@ -112,7 +113,7 @@ body {
 
 .header-nav .current-user-link {
     font-weight: bold;
-    color: #16ceed;
+    color: #1660ed;
     font-size: 1.1em;
     transition: color 0.3s ease;
 }
@@ -121,7 +122,7 @@ body {
     color: #03DAC6;
 }
 
-/* --- Загальні стилі контейнера --- */
+/* Загальні стилі контейнера  */
 .container {
     background-color: var(--header-bg);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
@@ -130,29 +131,29 @@ body {
 
     width: 90%;
     margin: 2rem auto; /* Загальний відступ зверху/знизу */
-    box-sizing: border-box; /* Додано про всяк випадок */
+    box-sizing: border-box;
 }
 
-/* --- Загальні стилі для заголовків сторінок --- */
+/*  Загальні стилі для заголовків сторінок  */
 h1.page-title,
 h2.page-title,
-h2.text-center { /* Об'єднано схожі */
+h2.text-center {
     color: var(--link-color);
     text-align: center;
-    margin-bottom: 1.5rem; /* Узгоджено відступ */
-    margin-top: 0; /* Забрано верхній відступ, якщо він був */
+    margin-bottom: 1.5rem;
+    margin-top: 0;
     word-break: break-word;
     overflow-wrap: break-word;
 }
 
-/* --- Загальні стилі горизонтальної лінії --- */
+
 hr {
     border: 0;
     border-top: 1px solid var(--border-color);/
-margin: 1.5rem 0; /* Узгоджено відступи */
+margin: 1.5rem 0;
 }
 
-/* --- Стилі для списку постів (сітка) --- */
+/* список постів */
 .posts-container {
     margin-top: 0;
     display: grid;
@@ -161,7 +162,7 @@ margin: 1.5rem 0; /* Узгоджено відступи */
     align-items: start;
 }
 
-/* --- Стилі для окремого поста (картки) --- */
+/*  окремі пости  */
 .post {
     background-color: var(--post-bg);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -171,8 +172,8 @@ margin: 1.5rem 0; /* Узгоджено відступи */
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    min-height: 200px; /* Додано мінімальну висоту, щоб уникнути стрибків */
-    position: relative; /* Для позиціонування внутрішніх елементів */
+    min-height: 200px;
+    position: relative;
 }
 
 .post:hover {
@@ -182,7 +183,7 @@ margin: 1.5rem 0; /* Узгоджено відступи */
 
 /* Заголовок поста в картці */
 .post h2,
-.post h3 { /* Об'єднано для схожих елементів */
+.post h3 {
     margin-top: 0;
     margin-bottom: 0.8rem;
     font-size: 1.3em;
@@ -200,15 +201,15 @@ margin: 1.5rem 0; /* Узгоджено відступи */
     color: var(--link-hover);
 }
 
-/* Мета-інформація (автор, дата) в картці */
+/*  автор, дата в картці */
 .post h5 {
     color: var(--muted-text);
     margin: 0.3rem 0;
     font-size: 0.9em;
 }
-/* Стиль для виділення імені автора в заголовку сторінки author_posts */
+/*  імені автора в заголовку сторінки  */
 .page-title .highlight-author-name {
-    color: #318baa; /* Колір як у посилань на автора на головній */
+    color: #318baa; /*  як у посилань на авторів  */
 
     font-weight: bold;
 }
@@ -221,43 +222,43 @@ margin: 1.5rem 0; /* Узгоджено відступи */
     text-decoration: underline;
 }
 
-/* Контейнер для тіла поста (з обмеженням висоти) */
+/* Контейнер для тіла поста  */
 .post-body-container {
-    max-height: 120px; /* Стандартна висота з home.html */
+    max-height: 120px;
     overflow: hidden;
     position: relative;
     transition: max-height 0.4s ease-out;
     margin-top: 1rem;
     margin-bottom: 0.8rem;
     line-height: 1.6;
-    min-height: 40px; /* Мінімальна висота */
-    flex-grow: 1; /* Дозволяє контейнеру займати вільне місце */
+    min-height: 40px; /* мінімальна висота */
+    flex-grow: 1; /*займати вільне місце */
 }
 
 .post-body-container.expanded {
-    max-height: 5000px; /* Достатньо велике значення */
+    max-height: 5000px;
     transition: max-height 0.6s ease-in;
     min-height: 40px;
 }
 
-/* Тіло поста */
+/* тіло поста */
 p.post-body {
     color: var(--post-body-text);
     margin: 0;
     word-break: break-word;
     overflow-wrap: break-word;
-    white-space: pre-wrap; /* Зберігаємо переноси рядків з тексту */
+    white-space: pre-wrap; /* зберігання переноси рядків з тексту */
 }
 
 /* Кнопка "Читати далі" */
 .read-more-btn {
-    display: none; /* Прихована за замовчуванням, JS покаже при потребі */
+    display: none; /* Прихована */
     background-color: transparent;
     border: 1px solid var(--link-color);
     color: var(--link-color);
     padding: 0.3rem 0.8rem;
     cursor: pointer;
-    margin-top: auto; /* Притискає до низу картки, коли .post-body-container не flex-grow */
+    margin-top: auto;
     border-radius: 5px;
     font-size: 0.9em;
     transition: background-color 0.3s, color 0.3s;
@@ -269,13 +270,12 @@ p.post-body {
     color: var(--button-text);
 }
 
-/* --- Секція Лайків (однакова для всіх сторінок де є пости) --- */
+/*  Секція Лайків  */
 .like-section {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    /* margin-top: 1rem; Видалено, буде керуватися батьківським контейнером */
-    /* align-self: flex-end; Видалено, буде керуватися батьківським контейнером */
+
 }
 
 .like-button {
@@ -313,10 +313,10 @@ p.post-body {
 .like-count {
     font-size: 0.9em;
     color: var(--muted-text);
-    min-width: 1em; /* Щоб число не стрибало */
+    min-width: 1em;
     text-align: right;
 }
-/* Стилі для кнопки перемикача тем */
+/*  перемикачі тем */
 #theme-toggle {
     background: none;
     border: none;
@@ -329,9 +329,9 @@ p.post-body {
 #theme-toggle:hover {
     color: var(--link-hover);
 }
-/* --- Кнопки прокрутки (з home.html) --- */
+/* кнопки прокрутки  home.html */
 #myBtnTop, #myBtnBottom {
-    display: none; /* Ховаємо за замовчуванням */
+    display: none;
     position: fixed;
     right: 30px;
     z-index: 99;
@@ -354,7 +354,7 @@ p.post-body {
     opacity: 1;
 }
 
-/* --- Загальні стилі для посилань (поза картками/хедером) --- */
+/*  Загальні стилі для посилань поза картками */
 a {
     color: #BB86FC;
     text-decoration: none;
@@ -365,18 +365,18 @@ a:hover {
     color: #03DAC6;
 }
 
-/* --- Стилі для повідомлення "Нічого не знайдено" / "Немає постів" --- */
+/*   "Немає постів"  */
 .no-posts-message {
     text-align: center;
     color: #888;
     margin-top: 3rem;
     font-size: 1.1em;
-    grid-column: 1 / -1; /* Щоб займав всю ширину сітки */
+    grid-column: 1 / -1; /* шоб займав всю ширину сітки */
 }
 .no-posts-message p {
     margin-bottom: 0.5rem;
 }
-.no-posts-message a { /* Посилання всередині повідомлення */
+.no-posts-message a {
     color: #BB86FC;
     text-decoration: none;
     font-weight: bold;
@@ -387,21 +387,21 @@ a:hover {
 }
 
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для home.html === */
-/* ======================================== */
 
-/* --- Контейнер для сортування та пошуку --- */
+/*   СТИЛІ для home.html  */
+
+
+/* Контейнер для сортування та пошуку */
 .controls-container {
     display: flex;
     justify-content: space-between; /* Розмістити сортування і пошук по краях */
-    align-items: center; /* Вирівняти по вертикалі */
-    margin-bottom: 1.5rem; /* Відступ знизу */
-    flex-wrap: wrap; /* Дозволити перенос на малих екранах */
+    align-items: center; /* вирівняти по вертикалі */
+    margin-bottom: 1.5rem; /* відступ знизу */
+    flex-wrap: wrap; /* дозволити перенос на малих екранах */
     gap: 1rem; /* Відстань між елементами при переносі */
 }
 
-/* Опції сортування */
+/*  сортування */
 .sort-options {
     font-size: 0.95em;
 }
@@ -412,7 +412,7 @@ a:hover {
 }
 
 .sort-options a {
-    color: #03DAC6;
+    color: #094f8d;
     text-decoration: none;
     margin-left: 1rem;
     padding: 0.3rem 0.5rem;
@@ -422,15 +422,32 @@ a:hover {
 
 .sort-options a:hover {
     background-color: rgba(3, 218, 198, 0.1);
-    color: #16ceed;
+    color: #094f8d;
 }
 
 .sort-options a.active-sort {
     font-weight: bold;
     color: #BB86FC;
-    background-color: rgba(187, 134, 252, 0.1);
+    background-color: rgba(117, 11, 247, 0.14);
 }
 
+html.light-theme .search-form input[type="text"] {
+    border-color: #823afb;
+    background-color: #ffffff; /
+    color: #333;
+
+}
+
+/*  стилі для кнопки пошуку у світлій темі */
+html.light-theme .search-form button {
+    background-color: var(--link-color);
+    color: var(--button-text);
+}
+html.light-theme .search-form button:hover {
+
+    background-color: var(--button-hover);
+
+}
 /* Форма пошуку */
 .search-form {
     display: flex;
@@ -462,22 +479,21 @@ a:hover {
     background-color: #01a998;
 }
 
-/* Мета-інформація в картці (додаткові дати для home) */
-.post h5.modified-date { /* Стиль для дати оновлення, якщо потрібен */
+/* додаткові дати для home) */
+.post h5.modified-date { /*  для дати оновлення */
     color: #757575;
 }
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для author_posts.html === */
-/* ======================================== */
-/* Використовуємо .post замість .author-post-item для уніфікації */
+
+/* СТИЛІ для author_posts.html */
+
 
 /* Шапка сторінки (заголовок + кнопка назад) */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem; /* Узгоджено */
+    margin-bottom: 1.5rem;
     flex-wrap: wrap;
     gap: 1rem;
 }
@@ -485,7 +501,7 @@ a:hover {
 /* Заголовок для цієї сторінки */
 .page-header .page-title {
     color: #BB86FC;
-    margin: 0; /* Прибрано відступи */
+    margin: 0; /* без відступів */
     font-size: 1.8em;
     text-align: left; /* Вирівнювання по лівому краю */
 }
@@ -509,23 +525,17 @@ a:hover {
     color: #1E1E1E;
 }
 
-/* Сітка постів (якщо потрібна специфічна для автора) */
-.author-posts-grid {
-    /* Використовуємо .posts-container */
-    /* Якщо потрібні відмінності, додати тут */
-}
 
 
-/* Мета-інформація (Дата) - трохи інші відступи */
+/* Дата */
 .post-meta {
     font-size: 0.85em;
     color: #888;
     text-align: right;
-    /* margin-top: 1rem; Видалено, керується .post-footer-section */
 }
 
-/* Футер картки поста для цієї сторінки */
-/* Об'єднано зі стилем liked_posts .post-footer-section */
+
+
 .post-footer-section {
     margin-top: auto; /* Притискає до низу картки */
     display: flex;
@@ -534,14 +544,12 @@ a:hover {
     padding-top: 1rem; /* Відступ зверху */
 }
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для liked_posts.html === */
-/* ======================================== */
-/* Використовуємо .post замість .liked-post-item для уніфікації */
 
-/* Шапка сторінки - використовуємо .page-header з author_posts */
-/* Кнопка "Назад" - використовуємо .back-button з author_posts */
-/* Сітка постів - використовуємо .posts-container */
+/* УНІКАЛЬНІ СТИЛІ для liked_posts.html */
+
+
+
+
 
 /* Футер картки поста (Дата + Лайк) */
 .post-footer-section {
@@ -553,29 +561,56 @@ a:hover {
 }
 /* Стиль для дати всередині футера */
 .post-footer-section .post-meta {
-    margin-right: 1rem; /* Додано відступ від лайків */
-}
-
-/* Лайк секція в футері - використовуємо загальний .like-section */
-.post-footer-section .like-section {
-    /* Стилі вже визначені */
+    margin-right: 1rem; /* відступ від лайків */
 }
 
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для login.html === */
-/* ======================================== */
+
+
+
+/* Стилі для лічильника символів */
+.char-counter {
+    font-size: 0.85em; /* Менший розмір шрифту */
+    color: var(--muted-text);
+    text-align: right; /*  по правому краю */
+    margin-top: 0.3rem; /*  відступ зверху */
+    transition: color 0.3s ease; /* зміна кольору */
+}
+
+/* Стиль для попередження по ліміту символів */
+.char-counter.limit-warning {
+    color: #fdb428;
+    font-weight: bold;
+}
+
+/* Стиль для досягнення ліміту  */
+.char-counter.limit-reached {
+    color: var(--like-color);
+    font-weight: bold;
+}
+
+/*  щоб лічильник не прилипав до наступного елемента */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+
+
+
+
+/* СТИЛІ для login.html */
+
 
 /* Контейнер для форми входу */
-.login-container { /* Використовуємо окремий клас, щоб не конфліктувати */
+.login-container {
     background-color: var(--header-bg);
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 450px; /* Вужчий контейнер для форми */
+    max-width: 450px;
     margin: 4rem auto; /* Більший відступ зверху/знизу */
-    position: relative; /* Для позиціонування .back-link */
+    position: relative;
     box-sizing: border-box;
 }
 
@@ -601,7 +636,7 @@ a:hover {
     border-color: var(--link-color);
 }
 
-/* Заголовок форми */
+/* заголовок форми */
 .login-container h2 {
     text-align: center;
     color: #BB86FC;
@@ -609,52 +644,52 @@ a:hover {
     margin-bottom: 1.5rem;
 }
 
-/* Група елементів форми */
+/* група елементів форми */
 .form-group {
     margin-bottom: 1rem;
-    position: relative; /* Для можливих іконок чи повідомлень */
+    position: relative;
 }
 
-/* Лейбли полів форми */
+
 .login-container label,
 .register-container label,
-.form-container label { /* Об'єднано для всіх форм */
-    display: block;
+.form-container label {
+
     margin-bottom: 0.5rem;
     color: #03DAC6;
     font-size: 0.95em;
-    display: flex; /* Для вирівнювання з іконками підказок */
+    display: flex;
     align-items: center;
     gap: 5px;
 }
 
-/* Поля вводу форм */
+
 .login-container input[type="email"],
 .login-container input[type="password"],
 .register-container input[type="text"],
 .register-container input[type="email"],
 .register-container input[type="password"],
 .form-container input[type="text"],
-.form-container textarea { /* Об'єднано для всіх форм */
+.form-container textarea {
     width: 100%;
     padding: 0.75rem;
-    margin-bottom: 0; /* Забрано відступ, керується .form-group */
+    margin-bottom: 0; /* Забрано відступ,все в  .form-group */
     border: 1px solid var(--border-color);
-    background-color: var(--post-bg); /* Використовуємо змінну для фону полів */
+    background-color: var(--post-bg);
     color: var(--text-color);
     border-radius: 5px;
 
     box-sizing: border-box;
     font-size: 1em;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    font-family: inherit; /* Наслідуємо шрифт */
+    font-family: inherit;
     line-height: 1.5; /* Для textarea */
 }
 
 .login-container input:focus,
 .register-container input:focus,
 .form-container input:focus,
-.form-container textarea:focus { /* Об'єднано для всіх форм */
+.form-container textarea:focus {
     border-color: var(--link-color);
     outline: none;
     box-shadow: 0 0 5px rgba(187, 134, 252, 0.3);
@@ -662,24 +697,24 @@ a:hover {
 
 /* Повідомлення про помилку */
 .error-message {
-    color: var(--like-color); /* Яскравий червоний */
+    color: var(--like-color);
     font-size: 0.9em;
     margin-top: 0.5rem;
-    display: block; /* За замовчуванням блочний */
+    display: block;
     text-align: center; /* Для login */
 }
 .error-message.field-error { /* Для помилок під полем */
     text-align: left;
-    display: none; /* Ховаємо, JS покаже */
+    display: none;
     font-size: 0.85em;
     margin-top: 5px;
 }
 
 
-/* Кнопка Submit для форм */
+
 .login-container button[type="submit"],
 .register-container button[type="submit"],
-.form-container button[type="submit"] { /* Об'єднано для всіх форм */
+.form-container button[type="submit"] {
     width: 100%;
     padding: 0.8rem;
     border: none;
@@ -696,7 +731,7 @@ a:hover {
 .login-container button[type="submit"]:hover,
 .register-container button[type="submit"]:hover,
 .form-container button[type="submit"]:hover {
-    bbackground-color: var(--button-hover); /* Змінено hover на бірюзовий */
+    bbackground-color: var(--button-hover);
 }
 
 /* Посилання під формою (наприклад, для реєстрації) */
@@ -706,23 +741,23 @@ a:hover {
     font-size: 0.9em;
 }
 .form-links span {
-    color: #aaa; /* Сірий текст */
+    color: #aaa;
 }
 .form-links a {
-    color: #03DAC6; /* Бірюзовий для посилань */
+    color: #03DAC6;
     text-decoration: none;
     margin: 0 0.5rem;
 }
 .form-links a:hover {
     text-decoration: underline;
-    color: #16ceed; /* Світліший бірюзовий при наведенні */
+    color: #16ceed;
 }
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для pomilka.html === */
-/* ======================================== */
 
-/* Використовуємо окремий клас для тіла сторінки помилки */
+/* СТИЛІ для pomilka.html  */
+
+
+
 body.error-page {
     height: 100vh;
     width: 100vw;
@@ -732,25 +767,25 @@ body.error-page {
             hsla(0, 0%, 100%, 0.03),
             transparent
     ),
-    #111; /* Темний фон */
-    color: var(--c1); /* Використовуємо CSS змінну */
+    #111;
+    color: var(--c1);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     margin: 0;
-    padding-top: 0; /* Перебиваємо загальний padding-top */
+    padding-top: 0;
 }
 
-/* CSS Змінні для кольорів анімації */
-.error-page:root { /* Краще визначати на body або html */
+
+.error-page:root {
     --c1: #6eccee;
     --c2: #f672ca;
     --c3: #fdb428;
     --c4: #b9f;
 }
-/* Якщо :root не працює в контексті body, можна перенести на html або визначити без :root */
+
 body.error-page {
     --c1: #6eccee;
     --c2: #f672ca;
@@ -777,12 +812,12 @@ body.error-page {
 }
 
 .circle {
-    --progress: 60%; /* Можна змінити */
+    --progress: 60%;
     background: conic-gradient(
             at center,
             var(--c1) var(--progress),
-            black var(--progress), /* Змінено на чорний для чіткості */
-            transparent calc(var(--progress) + 1%), /* Прибрано інші кольори для простоти */
+            black var(--progress),
+            transparent calc(var(--progress) + 1%),
             transparent
     );
     animation: progress 4s linear infinite;
@@ -792,16 +827,16 @@ body.error-page {
     inset: 0;
 }
 
-.circle:nth-child(2) { inset: 4vmin; animation-delay: -1s; } /* Змінено delay */
-.circle:nth-child(3) { inset: 8vmin; animation-delay: -0.5s; } /* Змінено delay */
+.circle:nth-child(2) { inset: 4vmin; animation-delay: -1s; }
+.circle:nth-child(3) { inset: 8vmin; animation-delay: -0.5s; }
 
 .text-container {
     text-align: center;
     margin-top: 3em;
-    padding: 2em 3em; /* Зменшено padding */
+    padding: 2em 3em;
     border: 1px solid var(--c1);
     border-radius: 10px;
-    background-color: rgba(34, 34, 34, 0.8); /* Напівпрозорий фон */
+    background-color: rgba(34, 34, 34, 0.8);
     max-width: 90%;
     box-sizing: border-box;
 }
@@ -824,7 +859,7 @@ body.error-page {
     padding: 0.5em 1em;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
-    display: inline-block; /* Щоб padding працював */
+    display: inline-block;
 }
 
 .text-container a:hover {
@@ -833,38 +868,38 @@ body.error-page {
 }
 
 .text-container hr {
-    border-color: var(--c1); /* Використовуємо змінну */
-    margin: 1.5em 0; /* Узгоджено відступи */
+    border-color: var(--c1);
+    margin: 1.5em 0;
 }
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для post.html (окремий пост) === */
-/* ======================================== */
 
-/* Контейнер для сторінки окремого поста */
+/*  СТИЛІ для post.html  */
+
+
+
 .post-view-container {
     background-color: #1E1E1E;
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 700px; /* Ширший ніж форма, вужчий ніж home */
+    max-width: 700px;
     margin: 2rem auto;
     box-sizing: border-box;
 }
 
-/* Посилання "На головну" */
+/* На головну в пост */
 .home-link {
     display: inline-block;
-    margin-bottom: 1.5rem; /* Збільшено відступ */
-    color: #BB86FC; /* Стандартний колір посилання */
+    margin-bottom: 1.5rem; /*  відступ */
+    color: #BB86FC;
 }
 .home-link:hover {
     color: #03DAC6;
 }
 
 /* Заголовок поста */
-.post-view-container h2.post-title { /* Специфічний клас */
+.post-view-container h2.post-title {
     text-align: center;
     color: #BB86FC;
     margin-bottom: 1rem;
@@ -872,7 +907,7 @@ body.error-page {
     overflow-wrap: break-word;
 }
 
-/* Мета інформація (Автор, дата) */
+/*  Автор, дата пост */
 .post-view-container h5 {
     color: #888;
     margin: 0.3rem 0;
@@ -893,13 +928,13 @@ body.error-page {
 .post-view-container p.post-body {
     line-height: 1.7;
     margin: 1.5rem 0; /* Відступи зверху/знизу */
-    white-space: pre-wrap; /* Зберігаємо форматування тексту */
+    white-space: pre-wrap;
     overflow-wrap: break-word;
     word-wrap: break-word;
     color: #E0E0E0;
 }
 
-/* Футер поста (Лайки + Кнопки дій) */
+/*  пост Лайки + Кнопки Дій */
 .post-footer {
     display: flex;
     justify-content: space-between; /* Розділити лайки і кнопки */
@@ -911,7 +946,7 @@ body.error-page {
     gap: 1rem; /* Відстань між лайками і кнопками при переносі */
 }
 
-/* Лайки у футері - використовуємо .like-section */
+
 
 /* Список дій (Edit/Delete) */
 .action-list {
@@ -923,7 +958,7 @@ body.error-page {
 }
 
 .action-list li {
-    margin: 0; /* Зайвий відступ */
+    margin: 0;
 }
 
 .action-list li a {
@@ -931,8 +966,8 @@ body.error-page {
     padding: 0.5rem 1rem;
     border-radius: 5px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    display: inline-block; /* Щоб padding працював */
-    color: #BB86FC; /* Стандартний колір посилання */
+    display: inline-block;
+    color: #BB86FC;
     background-color: transparent;
 }
 
@@ -942,25 +977,16 @@ body.error-page {
     border-color: #03DAC6;
 }
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для post_create.html & post_edit.html === */
-/* ======================================== */
 
-/* Використовуємо загальний .form-container */
-/* Тіло сторінки для форм створення/редагування (Спрощена версія) */
+/*   СТИЛІ для post_create.html & post_edit.html  */
+
 body.center-form {
-    /* display: flex; */        /* <<< ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ */
-    /* justify-content: center; */ /* <<< ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ */
-    /* flex-direction: column; */ /* <<< ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ */
-    min-height: 100vh;       /* Залишаємо, щоб сторінка могла бути високою */
-    overflow-y: auto;        /* Залишаємо для прокрутки */
-    padding: 2rem 1rem;      /* Базові відступи тіла сторінки */
+
+    min-height: 100vh;
+    overflow-y: auto;
+    padding: 2rem 1rem;
     box-sizing: border-box;
-    /* Переконайтесь, що тут є базові стилі body, якщо вони потрібні,
-       але краще їх мати в загальному правилі для body */
-    /* background-color: #121212; */
-    /* color: #E0E0E0; */
-    /* font-family: 'Roboto', sans-serif; */
+
 }
 
 /* Контейнер для форм створення/редагування */
@@ -970,11 +996,10 @@ body.center-form {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 600px; /* Або 700px для edit? Узгодьте */
+    max-width: 600px;
     box-sizing: border-box;
-    /* margin-top: auto; */     /* <<< ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ */
-    /* margin-bottom: auto; */  /* <<< ВИДАЛІТЬ АБО ЗАКОМЕНТУЙТЕ */
-    margin: 4rem auto;       /* <<< ДОДАЙТЕ ЦЕ: відступ 4rem зверху/знизу, авто з боків */
+
+    margin: 4rem auto;
 }
 
 /* Заголовок форми */
@@ -991,23 +1016,23 @@ body.center-form {
     color: var(--button-text);
     border-color: var(--link-color);
 }
-/* Поля вводу - стилі вже визначені вище */
 
-/* Textarea специфічні стилі */
+
+
 .form-container textarea {
-    resize: vertical; /* Дозволяє змінювати розмір вручну по вертикалі */
-    overflow-y: hidden; /* Приховує внутрішню прокрутку */
-    min-height: 120px; /* Мінімальна висота */
+    resize: vertical;
+    overflow-y: hidden;
+    min-height: 120px;
 }
 
 
 
 
-/* ======================================== */
-/* === УНІКАЛЬНІ СТИЛІ для register.html === */
-/* ======================================== */
 
-/* Використовуємо .register-container */
+/* СТИЛІ для register.html  */
+
+
+
 .register-container {
     background-color: #1E1E1E;
     padding: 2rem;
@@ -1023,7 +1048,7 @@ body.center-form {
 .register-container h1 {
     text-align: center;
     color: #BB86FC;
-    margin-top: 0; /* Відступ керується .back-link */
+    margin-top: 0;
     margin-bottom: 0.5rem;
 }
 .register-container h2 { /* Підзаголовок "Реєстрація" */
@@ -1035,11 +1060,11 @@ body.center-form {
 
 /* Поле з помилкою валідації */
 .register-container input.invalid-input {
-    border-color: #ff4d4d !important; /* Важливо для перевизначення */
+    border-color: #ff4d4d !important;
     background-color: rgba(255, 77, 77, 0.1);
 }
 
-/* Заблокована кнопка Submit */
+
 .register-container button[type="submit"]:disabled {
     background-color: #555;
     cursor: not-allowed;
@@ -1048,12 +1073,12 @@ body.center-form {
 .login-container,
 .register-container,
 .form-container {
-    background-color: var(--header-bg); /* Використовуємо змінну для фону */
+    background-color: var(--header-bg);
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 450px; /* Для login/register */
+    max-width: 450px;
     margin: 4rem auto;
     position: relative;
     box-sizing: border-box;
@@ -1066,12 +1091,12 @@ body.center-form {
     margin-top: 1.5rem;
 }
 
-/* Підказки (Tooltips) */
+/* Підказки  */
 .tooltip-container {
     position: relative;
-    display: inline-flex; /* Щоб іконка була в рядку з текстом */
+    display: inline-flex;
     align-items: center;
-    margin-left: 5px; /* Невеликий відступ від лейбла */
+    margin-left: 5px; /*  відступ в */
 }
 .tooltip-icon {
     display: inline-flex;
@@ -1087,11 +1112,11 @@ body.center-form {
     line-height: 1;
     text-align: center;
     font-weight: bold;
-    user-select: none; /* Заборона виділення тексту іконки */
+    user-select: none;
     background-color: rgba(255,255,255,0.1);
 }
 .tooltip-text {
-    visibility: hidden; /* Приховано за замовчуванням */
+    visibility: hidden;
     opacity: 0;
     width: 220px;
     background-color: #555; /* Фон підказки */
@@ -1102,12 +1127,12 @@ body.center-form {
     font-size: 0.85em;
     line-height: 1.4;
     position: absolute;
-    z-index: 10; /* Щоб було поверх інших елементів */
-    bottom: 135%; /* Позиція над іконкою */
+    z-index: 10;
+    bottom: 135%;
     left: 50%;
     transform: translateX(-50%); /* Центрування */
     transition: opacity 0.3s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Тінь */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 /* Стрілка підказки */
 .tooltip-text::after {
@@ -1120,14 +1145,14 @@ body.center-form {
     border-style: solid;
     border-color: #555 transparent transparent transparent; /* Колір стрілки */
 }
-/* Показ підказки при наведенні/фокусі */
+/* Показ підказки  */
 .tooltip-container:hover .tooltip-text,
-.tooltip-container:focus-within .tooltip-text { /* Додано :focus-within */
+.tooltip-container:focus-within .tooltip-text {
     visibility: visible;
     opacity: 1;
 }
 
-/* Анімація "трясіння" для невалідних полів */
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }

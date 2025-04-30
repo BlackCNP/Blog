@@ -11,7 +11,7 @@
             try {
                 var theme = localStorage.getItem('theme');
                 if (theme === 'light') {
-                    // Додаємо клас до <html>
+
                     document.documentElement.classList.add('light-theme');
                 }
             } catch (e) {
@@ -78,29 +78,27 @@
 </div>
 
 <script>
-    // --- Код для підказок (можна винести в окремий файл, якщо використовується на інших сторінках) ---
+
     document.addEventListener('DOMContentLoaded', () => {
-        // Додайте тут логіку ініціалізації підказок, якщо вона потрібна
-        // Наприклад, обробники hover/focus для .tooltip-container
+
     });
-    // Функція закриття підказок (якщо потрібна)
+
     function closeAllTooltips(exceptContainer = null) {
-        // Ваша логіка закриття
+
     }
 
-    // --- JavaScript для валідації форми ---
+
     const form = document.getElementById('register-form');
     const nicknameInput = document.getElementById('firstname');
     const lastnameInput = document.getElementById('lastname');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
 
-    // Знаходимо батьківські групи для анімації
     const nicknameGroup = document.getElementById('nickname-group');
     const lastnameGroup = document.getElementById('lastname-group');
     const passwordGroup = document.getElementById('password-group');
 
-    // Знаходимо елементи для виводу помилок
+
     const nicknameError = document.getElementById('nickname-error');
     const lastnameError = document.getElementById('lastname-error');
     const emailError = document.getElementById('email-error');
@@ -108,38 +106,38 @@
 
     const submitButton = form.querySelector('button[type="submit"]');
 
-    // Константи для валідації
-    const namePattern = /^[a-zA-Zа-яА-ЯёЁіїєґҐ'0-9-]+$/; // Для поля "Ім'я"
+
+    const namePattern = /^[a-zA-Zа-яА-ЯіїєґҐ'0-9-]+$/;
     const minNicknameLength = 4;
     const maxNicknameLength = 20;
     const maxLastnameLength = 20;
     const minPasswordLength = 8;
 
-    // Функція для перевірки одного поля та показу/приховування помилки
+
     function validateField(inputElement, errorElement) {
         let errorMessage = '';
         let isValid = true;
-        const value = inputElement.value.trim(); // Без зовнішніх пробілів
-        const originalValue = inputElement.value; // З пробілами для перевірки
-        let shakeElement = null; // Елемент для анімації (батьківський div)
+        const value = inputElement.value.trim(); // без зовнішніх пробілів
+        const originalValue = inputElement.value; // з пробілами
+        let shakeElement = null;
 
-        // 1. Перевірка на пустоту (якщо поле required)
+        // еревірка на пустоту
         if (inputElement.required && value === '') {
             errorMessage = "Це поле є обов'язковим.";
             isValid = false;
-            // Не встановлюємо shakeElement тут
+
         } else {
-            // 2. Специфічні перевірки для кожного поля (якщо не порожнє)
+
             switch (inputElement.id) {
                 case 'firstname': // Псевдонім
                     shakeElement = nicknameGroup;
-                    if (/\s/.test(originalValue)) { // Перевірка на будь-які пробіли
+                    if (/\s/.test(originalValue)) {
                         errorMessage = 'Псевдонім не повинен містити пробілів.';
                         isValid = false;
-                    } else if (value.length > 0 && value.length < minNicknameLength) { // Мін. довжина
+                    } else if (value.length > 0 && value.length < minNicknameLength) {
                         errorMessage = `Мінімальна довжина: ${minNicknameLength} символи.`;
                         isValid = false;
-                    } else if (value.length > maxNicknameLength) { // Макс. довжина
+                    } else if (value.length > maxNicknameLength) {
                         errorMessage = `Максимальна довжина: ${maxNicknameLength} символів.`;
                         isValid = false;
                     }
@@ -150,28 +148,28 @@
                     if (/\s/.test(originalValue)) { // Перевірка на будь-які пробіли
                         errorMessage = 'Ім\'я не повинно містити пробілів.';
                         isValid = false;
-                    } else if (!namePattern.test(value) && value.length > 0) { // Перевірка патерну
+                    } else if (!namePattern.test(value) && value.length > 0) {
                         errorMessage = 'Дозволено літери, цифри, дефіс, апостроф.';
                         isValid = false;
-                    } else if (value.length > maxLastnameLength) { // Макс. довжина
+                    } else if (value.length > maxLastnameLength) {
                         errorMessage = `Максимальна довжина: ${maxLastnameLength} символів.`;
                         isValid = false;
                     }
                     break;
 
-                case 'email': // Пошта
-                    // Немає shakeElement для email
+                case 'email':
+
                     if (/\s/.test(originalValue)) { // Перевірка на пробіли
                         errorMessage = 'Пошта не повинна містити пробілів.';
                         isValid = false;
-                        // Використовуємо вбудовану валідацію браузера для формату email
+                        //  вбудована валідація браузера  email
                     } else if (!inputElement.checkValidity() && value.length > 0) {
                         errorMessage = 'Будь ласка, введіть дійсну адресу пошти.';
                         isValid = false;
                     }
                     break;
 
-                case 'password': // Пароль
+                case 'password':
                     shakeElement = passwordGroup;
                     if (/\s/.test(originalValue)) { // Перевірка на пробіли
                         errorMessage = 'Пароль не повинен містити пробілів.';
@@ -184,27 +182,26 @@
             }
         }
 
-        // Показ/приховування помилки та стилів
+        // помилки та стилів
         errorElement.textContent = errorMessage.trim();
         if (!isValid) {
             errorElement.style.display = 'block';
             inputElement.classList.add('invalid-input');
-            // Запуск анімації, якщо це помилка формату/довжини (не "обов'язкове поле")
-            // і якщо елемент для анімації знайдено
+
             if (errorMessage !== "Це поле є обов'язковим." && shakeElement && !shakeElement.classList.contains('shake')) {
                 shakeElement.classList.add('shake');
-                // Видаляємо клас анімації після її завершення
-                setTimeout(() => { shakeElement.classList.remove('shake'); }, 400); // 400ms - тривалість анімації
+
+                setTimeout(() => { shakeElement.classList.remove('shake'); }, 400); //  тривалість
             }
         } else {
-            // Якщо поле валідне, приховуємо помилку і знімаємо стиль помилки
+
             errorElement.style.display = 'none';
             inputElement.classList.remove('invalid-input');
         }
-        return isValid; // Повертаємо результат валідації
+        return isValid;
     }
 
-    // Додаємо слухачів події 'input' для миттєвої валідації
+
     [nicknameInput, lastnameInput, emailInput, passwordInput].forEach(input => {
         const errorElement = document.getElementById(input.id + '-error');
         if (errorElement) {
@@ -212,28 +209,28 @@
         }
     });
 
-    // Додаємо слухача події 'submit' для фінальної перевірки перед відправкою
+
     form.addEventListener('submit', function(event) {
-        // Примусово валідуємо всі поля
+
         const isNicknameValid = validateField(nicknameInput, nicknameError);
         const isLastnameValid = validateField(lastnameInput, lastnameError);
         const isEmailValid = validateField(emailInput, emailError);
         const isPasswordValid = validateField(passwordInput, passwordError);
 
-        // Якщо хоча б одне поле не валідне, зупиняємо відправку форми
+
         if (!isNicknameValid || !isLastnameValid || !isEmailValid || !isPasswordValid) {
-            event.preventDefault(); // Зупиняємо стандартну дію браузера (відправку)
+            event.preventDefault();
             console.log("Form submission prevented due to validation errors.");
 
-            // Фокусуємося на першому невалідному полі для зручності
+
             if (!isNicknameValid) nicknameInput.focus();
             else if (!isLastnameValid) lastnameInput.focus();
             else if (!isEmailValid) emailInput.focus();
             else if (!isPasswordValid) passwordInput.focus();
         }
-        // Якщо всі поля валідні, форма відправиться
+
     });
-    // --- Кінець JS валідації ---
+
 </script>
 
 </body>

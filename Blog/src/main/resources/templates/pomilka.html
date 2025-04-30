@@ -5,121 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Error</title>
+    <script>
+        // застосування теми з localStorage
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+
+                    document.documentElement.classList.add('light-theme');
+                }
+
+            } catch (e) {
+                console.error("Помилка застосування теми з localStorage", e);
+            }
+        })();
+    </script>
     <script th:src="@{/js/theme-switcher.js}" defer></script>
-    <!--<style>
-        @property &#45;&#45;progress {
-            syntax: "<percentage>";
-            inherits: true;
-            initial-value: 0%;
-        }
 
-        :root {
-            &#45;&#45;c1: #6eccee;
-            &#45;&#45;c2: #f672ca;
-            &#45;&#45;c3: #fdb428;
-            &#45;&#45;c4: #b9f;
-        }
-
-        @keyframes progress {
-            from {
-                &#45;&#45;progress: 0%;
-            }
-
-            to {
-                &#45;&#45;progress: 100%;
-            }
-        }
-
-        .circle {
-            &#45;&#45;progress: 60%;
-            background: conic-gradient(
-                    at center,
-                    var(&#45;&#45;c1) var(&#45;&#45;progress),
-                    black var(&#45;&#45;progress),
-                    var(&#45;&#45;c2) calc(var(&#45;&#45;progress) + 20%),
-                    var(&#45;&#45;c3) calc(var(&#45;&#45;progress) + 30%),
-                    var(&#45;&#45;c3) calc(var(&#45;&#45;progress) + 50%),
-                    transparent
-            );
-            animation: progress 4s linear infinite;
-            border-radius: 50%;
-            mask: radial-gradient(circle at center, transparent 65%, black 65%);
-            position: absolute;
-            inset: 0;
-        }
-
-        .circle:nth-child(2) {
-            inset: 4vmin;
-            animation-delay: 1s;
-        }
-
-        .circle:nth-child(3) {
-            inset: 8vmin;
-            animation-delay: 0.5s;
-        }
-
-        .animated-container {
-            filter: drop-shadow(0 0 0.8vmin hsla(0, 0%, 0%, 1));
-            position: relative;
-            width: 40vmin;
-            aspect-ratio: 1;
-        }
-
-        .text-container {
-            text-align: center;
-            margin-top: 3em;
-            padding: 5em;
-            border: 1px solid var(&#45;&#45;c1);
-            border-radius: 10px;
-            background-color: #222;
-        }
-
-        body {
-            height: 100vh;
-            width: 100vw;
-            font-family: Roboto, Inter, "Helvetica Neue", Helvetica, sans-serif;
-            background: radial-gradient(
-                    30% 40% at center,
-                    hsla(0, 0%, 100%, 0.03),
-                    transparent
-            ),
-            #111;
-            color: var(&#45;&#45;c1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            margin: 0;
-        }
-
-        h1 {
-            color: var(&#45;&#45;c2);
-        }
-
-        p {
-            color: var(&#45;&#45;c3);
-        }
-
-        a {
-            color: var(&#45;&#45;c4);
-            text-decoration: none;
-            border: 1px solid var(&#45;&#45;c4);
-            padding: 0.5em 1em;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        a:hover {
-            background-color: var(&#45;&#45;c4);
-            color: #111;
-        }
-
-        hr {
-            border: 1px solid var(&#45;&#45;c1);
-            margin: 2em 0;
-        }
-    </style>-->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="error-page"> <div class="animated-container">

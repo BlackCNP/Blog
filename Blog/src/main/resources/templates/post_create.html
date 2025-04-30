@@ -5,148 +5,96 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create</title>
-   <!-- <style>
-        body {
-            background-color: #121212;
-            color: #E0E0E0;
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
 
-        .container {
-            background-color: #1E1E1E;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 600px;
-        }
-
-        h2.text-center {
-            text-align: center;
-            color: #BB86FC;
-            margin-bottom: 1.5rem;
-        }
-
-        a {
-            color: #BB86FC;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: #03DAC6;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #03DAC6;
-        }
-
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background-color: #2C2C2C;
-            color: #E0E0E0;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus {
-            border-color: #BB86FC;
-            outline: none;
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 5px;
-            background-color: #BB86FC;
-            color: #121212;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #03DAC6;
-        }
-
-
-
-    </style>
--->
+    <script>
+        // застосування теми з localStorage
+        (function() {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                    document.documentElement.classList.add('light-theme');
+                }
+            } catch (e) {
+                console.error("Помилка застосування теми з localStorage", e);
+            }
+        })();
+    </script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/js/theme-switcher.js}" defer></script>
 </head>
-<body class="center-form"> <div class="form-container"> <a th:href="@{/}" class="back-link-form">Home</a> <form action="#"
-                                                                                                                th:action="@{'/posts/create'}"
-                                                                                                                th:object="${post}"
-                                                                                                                method="post">
-    <input type="hidden" th:field="*{account}" />
-    <input type="hidden" th:field="*{createdAt}" />
-    <h2 class="text-center">Напишіть свій пост</h2>
-    <div class="form-group">
-        <label for="new-post-title">Заголовок</label>
-        <input id="new-post-title" type="text" th:field="*{title}" placeholder="Заголовок"/>
-    </div>
-    <div class="form-group">
-        <label for="new-post-body">Текст/Контент</label>
-        <textarea id="new-post-body" th:field="*{body}"></textarea>
-    </div>
-    <button type="submit">Опублікувати</button>
-
-</form>
+<body class="center-form">
+<div class="form-container">
+    <a th:href="@{/}" class="back-link-form">Home</a>
+    <form action="#"
+          th:action="@{'/posts/create'}"
+          th:object="${post}"
+          method="post">
+        <input type="hidden" th:field="*{account}" />
+        <input type="hidden" th:field="*{createdAt}" />
+        <h2 class="text-center">Напишіть свій блог</h2>
+        <div class="form-group">
+            <label for="new-post-title">Заголовок</label>
+            <input id="new-post-title" type="text" th:field="*{title}" placeholder="Заголовок"
+                   required maxlength="140" />
+            <div id="title-char-count" class="char-counter">Залишилось символів: 140</div>
+        </div>
+        <div class="form-group">
+            <label for="new-post-body">Текст/Контент</label>
+            <textarea id="new-post-body" th:field="*{body}" required></textarea>
+        </div>
+        <button type="submit">Опублікувати</button>
+    </form>
 </div>
 <script>
-    // Знаходимо textarea на сторінці (шукаємо за ID)
-    // Вам потрібно буде перевірити ID у ваших файлах
+    // авторозмір
+
     const textarea = document.getElementById('new-post-body') || document.getElementById('edit-post-body');
 
-    // Функція для автоматичної зміни розміру
+
     function autoResizeTextarea(element) {
-        if (!element) return; // Виходимо, якщо елемент не знайдено
-        // Тимчасово ставимо висоту auto, щоб scrollHeight розрахувався правильно
+        if (!element) return;
         element.style.height = 'auto';
-        // Встановлюємо висоту рівною повній висоті контенту + невеликий запас (2px)
         element.style.height = (element.scrollHeight + 2) + 'px';
-        // Запобігаємо появі непотрібної прокрутки всередині textarea
         element.style.overflowY = 'hidden';
     }
 
-    // Додаємо обробник події 'input' (спрацьовує при друку, вставці, видаленні)
     if (textarea) {
+
         textarea.addEventListener('input', function() {
             autoResizeTextarea(this);
         });
 
-        // Викликаємо функцію при завантаженні сторінки,
-        // щоб встановити правильний розмір для вже існуючого тексту (особливо для edit)
-        // Використовуємо setTimeout, щоб гарантувати, що всі стилі застосовані
         setTimeout(() => {
             autoResizeTextarea(textarea);
         }, 0);
+    }
 
-        // Додатково можна додати resize при зміні розміру вікна, якщо потрібно
-        // window.addEventListener('resize', () => autoResizeTextarea(textarea));
+    // лічильник символів заголовка
+    const titleInput = document.getElementById('new-post-title');
+    const titleCharCount = document.getElementById('title-char-count');
+    const maxLength = 140;
+
+    if (titleInput && titleCharCount) {
+
+        function updateTitleCharCount() {
+            const currentLength = titleInput.value.length;
+            const remaining = maxLength - currentLength;
+            titleCharCount.textContent = `Залишилось символів: ${remaining}`;
+
+            //  попередження
+            titleCharCount.classList.remove('limit-warning', 'limit-reached');
+            if (remaining < 0) {
+                titleCharCount.classList.add('limit-reached');
+            } else if (remaining <= 20) {
+                titleCharCount.classList.add('limit-warning');
+            }
+        }
+
+
+        updateTitleCharCount();
+
+        titleInput.addEventListener('input', updateTitleCharCount);
     }
 </script>
 </body>
-
 </html>

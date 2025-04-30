@@ -1,21 +1,26 @@
-// theme-switcher.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
-    const currentTheme = localStorage.getItem('theme') || 'dark';
 
-    // Встановлюємо початкову тему
-    if (currentTheme === 'light') {
-        document.body.classList.add('light-theme');
+    const isInitiallyLight = document.documentElement.classList.contains('light-theme');
+
+
+    if (isInitiallyLight) {
         themeToggle.textContent = '🌞';
     } else {
         themeToggle.textContent = '🌙';
     }
 
-    // Обробник кліку на перемикач
+    //  клік
     themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        const isLightTheme = document.body.classList.contains('light-theme');
-        localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
-        themeToggle.textContent = isLightTheme ? '🌞' : '🌙';
+        // перемкнути клас на <html>
+        document.documentElement.classList.toggle('light-theme');
+
+        // збереження нової теми
+        const isNowLight = document.documentElement.classList.contains('light-theme');
+        localStorage.setItem('theme', isNowLight ? 'light' : 'dark');
+
+
+        themeToggle.textContent = isNowLight ? '🌞' : '🌙';
     });
 });

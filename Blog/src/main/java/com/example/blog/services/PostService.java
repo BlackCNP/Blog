@@ -42,23 +42,23 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<Post> getAllSortedAndFiltered(String sortBy, String searchQuery) {
         Sort sort;
-        // Визначаємо сортування
+
         if ("likes".equalsIgnoreCase(sortBy)) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "createdAt");
         } else {
             sort = Sort.by(Sort.Direction.DESC, "createdAt"); // За замовчуванням - за датою
         }
 
-        // Перевіряємо, чи є пошуковий запит
-        // StringUtils.hasText() перевіряє на null, порожній рядок і рядок з пробілів
+        //  чи є пошуковий запит
+
         if (StringUtils.hasText(searchQuery)) {
-            // Якщо є запит - викликаємо метод пошуку за назвою
-            return postRepository.findByTitleContainingIgnoreCase(searchQuery.trim(), sort); // trim() видаляє зайві пробіли
+
+            return postRepository.findByTitleContainingIgnoreCase(searchQuery.trim(), sort);
         } else {
-            // Якщо запиту немає - повертаємо всі пости з вибраним сортуванням
+
             return postRepository.findAll(sort);
         }
     }
-    // --- КІНЕЦЬ ОНОВЛЕННЯ ---
+
 
 }
