@@ -5,7 +5,7 @@ import com.example.blog.models.Post;
 import com.example.blog.repositories.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort; // <-- Додано імпорт
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -46,10 +46,10 @@ public class PostService {
         if ("likes".equalsIgnoreCase(sortBy)) {
             sort = Sort.by(Sort.Direction.DESC, "likeCount", "createdAt");
         } else {
-            sort = Sort.by(Sort.Direction.DESC, "createdAt"); // За замовчуванням - за датою
+            sort = Sort.by(Sort.Direction.DESC, "createdAt");
         }
 
-        //  чи є пошуковий запит
+
 
         if (StringUtils.hasText(searchQuery)) {
 

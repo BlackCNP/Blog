@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Formula; // <-- Додано імпорт
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -33,42 +33,34 @@ public class Post {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "post_like", // Перевірте, чи ця назва правильна!
+            name = "post_like",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
     private Set<Account> likedBy = new HashSet<>();
 
-    // --- ДОДАНО: Поле для сортування за лайками ---
-    /**
-     * Це поле не зберігається в таблиці Post, а обчислюється
-     * базою даних при кожному запиті завдяки @Formula.
-     * Дозволяє сортувати пости за кількістю лайків.
-     * Важливо: "post_like" - це назва вашої проміжної таблиці для лайків.
-     * "pl.post_id" - назва колонки в цій таблиці, що посилається на Post.
-     * "id" - назва колонки ID в таблиці Post.
-     */
+
     @Formula("(select count(*) from post_like pl where pl.post_id = id)")
-    private int likeCount; // Hibernate автоматично заповнить це поле
-    // --- КІНЕЦЬ ДОДАНОГО КОДУ ---
+    private int likeCount;
+
 
 
     @Override
     public String toString() {
-        // Оновлений toString може включати likeCount, якщо потрібно,
-        // але основна логіка залишається
+
+
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", createdAt=" + createdAt +
                 ", modifiedAt=" + modifiedAt +
                 ", accountId=" + (account != null ? account.getId() : null) +
-                ", actualLikes=" + (likedBy != null ? likedBy.size() : 0) + // Реальний розмір колекції (може бути LAZY)
-                ", calculatedLikeCount=" + likeCount + // Значення з @Formula
+                ", actualLikes=" + (likedBy != null ? likedBy.size() : 0) +
+                ", calculatedLikeCount=" + likeCount +
                 '}';
     }
 
-    // Методи addLiker/removeLiker залишаються
+
     public void addLiker(Account account) {
         this.likedBy.add(account);
     }

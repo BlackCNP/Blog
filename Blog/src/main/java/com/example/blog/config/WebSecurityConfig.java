@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                                 antMatcher("/js/**"),
                                 antMatcher("/fonts/**"),
                                 antMatcher("/webjars/**"),
-                                antMatcher("/"), // Головна сторінка
+                                antMatcher("/"),
                                 antMatcher("/rss/**"),
                                 antMatcher("/register/**"),
                                 antMatcher("/login"),

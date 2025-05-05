@@ -7,10 +7,10 @@ import com.example.blog.services.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.persistence.EntityNotFoundException; // Додано для обробки помилок
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus; // Додано для відповіді API
-import org.springframework.http.ResponseEntity; // Додано для відповіді API
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,14 +18,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*; // Додано для @ResponseBody
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashMap; // Додано для відповіді API
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map; // Додано для відповіді API
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors; // Додано для обробки списків
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -37,27 +37,27 @@ public class PostController {
     @Autowired
     private AccountService accountService;
 
-    // --- ДОДАНО: API Ендпоінт для ЛАЙКА ---
+
     @PostMapping("/api/posts/{postId}/like")
     @PreAuthorize("isAuthenticated()")
-    @ResponseBody // Важливо: вказує, що метод повертає дані (JSON), а не ім'я шаблону
+    @ResponseBody
     public ResponseEntity<?> likePostApi(@PathVariable Long postId, Principal principal) {
         Map<String, Object> response = new HashMap<>();
         try {
-            // Отримуємо ID поточного користувача
+
             Account currentUser = accountService.findByEmail(principal.getName())
                     .orElseThrow(() -> new EntityNotFoundException("Current user not found"));
             Long userId = currentUser.getId();
 
-            // Викликаємо сервіс для лайка
+
             postService.likePost(postId, userId);
 
-            // Отримуємо оновлену кількість лайків
+
             int newLikeCount = postService.getLikeCount(postId);
 
             response.put("success", true);
             response.put("likeCount", newLikeCount);
-            response.put("userLiked", true); // Користувач тепер лайкнув
+            response.put("userLiked", true);
             return ResponseEntity.ok(response);
 
         } catch (EntityNotFoundException e) {
@@ -65,17 +65,17 @@ public class PostController {
             response.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            // Обробка інших можливих помилок
+
             response.put("success", false);
             response.put("error", "An unexpected error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // --- ДОДАНО: API Ендпоінт для АНЛАЙКА ---
+
     @PostMapping("/api/posts/{postId}/unlike")
     @PreAuthorize("isAuthenticated()")
-    @ResponseBody // Повертаємо JSON
+    @ResponseBody
     public ResponseEntity<?> unlikePostApi(@PathVariable Long postId, Principal principal) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -89,7 +89,7 @@ public class PostController {
 
             response.put("success", true);
             response.put("likeCount", newLikeCount);
-            response.put("userLiked", false); // Користувач тепер не лайкнув
+            response.put("userLiked", false);
             return ResponseEntity.ok(response);
 
         } catch (EntityNotFoundException e) {
@@ -103,7 +103,7 @@ public class PostController {
         }
     }
 
-    // --- ДОДАНО: Ендпоінт для сторінки "Вподобані пости" ---
+
     @GetMapping("/posts/liked")
     @PreAuthorize("isAuthenticated()")
     public String showLikedPosts(Model model, Principal principal) {
@@ -114,40 +114,37 @@ public class PostController {
 
             List<Post> likedPosts = postService.getLikedPostsByUser(userId);
 
-            // --- Додаємо інформацію про лайки і статус для поточного користувача ---
-            //    (Це може здатися дивним для сторінки "вподобане", але потрібно для
-            //     коректної роботи іконки лайка, яка буде на всіх сторінках)
+
             Map<Long, Integer> likeCounts = new HashMap<>();
-            Map<Long, Boolean> userLikedStatuses = new HashMap<>(); // Тут завжди буде true
+            Map<Long, Boolean> userLikedStatuses = new HashMap<>();
 
             for (Post post : likedPosts) {
                 likeCounts.put(post.getId(), postService.getLikeCount(post.getId()));
-                // На цій сторінці всі пости лайкнуті поточним користувачем
+
                 userLikedStatuses.put(post.getId(), true);
             }
-            // --- Кінець додавання інформації ---
 
-            model.addAttribute("posts", likedPosts); // Використовуємо ім'я "posts" для уніфікації з іншими шаблонами
+
+            model.addAttribute("posts", likedPosts);
             model.addAttribute("likeCounts", likeCounts);
             model.addAttribute("userLikedStatuses", userLikedStatuses);
-            model.addAttribute("currentUserAccount", currentUser); // Для хедера
-            model.addAttribute("pageTitle", "Вподобані публікації"); // Заголовок сторінки
+            model.addAttribute("currentUserAccount", currentUser);
+            model.addAttribute("pageTitle", "Вподобані публікації");
 
-            return "liked_posts"; // Назва нового шаблону
+            return "liked_posts";
 
         } catch (EntityNotFoundException e) {
-            // Обробка помилки, якщо користувач не знайдений
-            // model.addAttribute("errorMessage", e.getMessage());
-            return "pomilka"; // Або інша сторінка помилки
+
+            return "pomilka";
         }
     }
 
 
-    // --- Оновлений Метод getPostsByAuthor ---
+
     @GetMapping("/author/{authorId}")
     @Operation(summary = "Отримати всі пости автора", description = "Показати сторінку з усіма постами певного автора")
     @ApiResponses(value = { /* ... */ })
-    // Додаємо Principal
+
     public String getPostsByAuthor(@PathVariable Long authorId, Model model, Principal principal) {
         Optional<Account> optionalAuthor = accountService.findById(authorId);
         if (optionalAuthor.isEmpty()) { /* ... обробка помилки ... */ return "pomilka"; }
@@ -155,7 +152,7 @@ public class PostController {
         Account author = optionalAuthor.get();
         List<Post> posts = postService.findPostsByAuthorId(authorId);
 
-        // --- Додаємо інформацію про лайки і статус для поточного користувача ---
+
         Map<Long, Integer> likeCounts = new HashMap<>();
         Map<Long, Boolean> userLikedStatuses = new HashMap<>();
         Account currentUser = null;
@@ -166,7 +163,7 @@ public class PostController {
             if (optCurrentUser.isPresent()) {
                 currentUser = optCurrentUser.get();
                 currentUserId = currentUser.getId();
-                model.addAttribute("currentUserAccount", currentUser); // Для хедера
+                model.addAttribute("currentUserAccount", currentUser);
             }
         }
 
@@ -178,7 +175,7 @@ public class PostController {
             }
             userLikedStatuses.put(post.getId(), liked);
         }
-        // --- Кінець додавання інформації ---
+
 
         model.addAttribute("author", author);
         model.addAttribute("posts", posts);
@@ -189,7 +186,7 @@ public class PostController {
     }
 
 
-    // --- Оновлений Метод getPost ---
+
     @GetMapping("/posts/{id}")
     @Operation(summary = "Отримати пост за ID", description = "Отримати пост з бази даних за його ID")
     @ApiResponses(value = { /* ... */ })
@@ -205,30 +202,30 @@ public class PostController {
             boolean userLiked = false;
             Account currentUser = null;
 
-            // Перевіряємо авторизацію та отримуємо дані
+
             if (principal != null) {
                 String username = principal.getName();
                 Optional<Account> optCurrentUser = accountService.findByEmail(username);
                 if (optCurrentUser.isPresent()) {
                     currentUser = optCurrentUser.get();
-                    model.addAttribute("currentUserAccount", currentUser); // Додаємо для хедера
+                    model.addAttribute("currentUserAccount", currentUser);
 
-                    // Перевіряємо власника
+
                     if (post.getAccount() != null && post.getAccount().getId().equals(currentUser.getId())) {
                         isOwner = true;
                     }
-                    // Перевіряємо, чи лайкнув поточний користувач
+
                     userLiked = postService.hasUserLikedPost(post.getId(), currentUser.getId());
                 }
 
-                // Перевіряємо адміна
+
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if (authentication != null && authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
                     isAdmin = true;
                 }
             }
 
-            // Додаємо прапорці та кількість лайків в модель
+
             model.addAttribute("canEditDelete", isAdmin || isOwner);
             model.addAttribute("likeCount", postService.getLikeCount(post.getId()));
             model.addAttribute("userLiked", userLiked);
@@ -239,8 +236,7 @@ public class PostController {
         }
     }
 
-    // --- Решта методів (create, edit, update, delete) залишаються як у попередній версії ---
-    // ... (скопіюйте їх сюди з попереднього повідомлення) ...
+
     @GetMapping("/posts/create")
     @PreAuthorize("isAuthenticated()")
     public String createNewPost(Model model, Principal principal) {

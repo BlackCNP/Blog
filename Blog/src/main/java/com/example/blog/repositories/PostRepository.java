@@ -2,7 +2,7 @@ package com.example.blog.repositories;
 
 import com.example.blog.models.Account;
 import com.example.blog.models.Post;
-import org.springframework.data.domain.Sort; // <-- Додайте імпорт
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +14,10 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // Метод для пошуку постів за автором
+    //  для пошуку постів за автором
     List<Post> findByAccountIdOrderByIdDesc(Long accountId);
 
-    // Методи для лайків
+    //  для лайків
     @Query("SELECT COUNT(p) > 0 FROM Post p JOIN p.likedBy a WHERE p.id = :postId AND a.id = :accountId")
     boolean existsByIdAndLikedByAccountId(@Param("postId") Long postId, @Param("accountId") Long accountId);
 
