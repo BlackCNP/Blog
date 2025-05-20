@@ -35,8 +35,8 @@
         <div class="form-group">
             <label for="new-post-title">Заголовок</label>
             <input id="new-post-title" type="text" th:field="*{title}" placeholder="Заголовок"
-                   required maxlength="140" />
-            <div id="title-char-count" class="char-counter">Залишилось символів: 140</div>
+                   required maxlength="100" />
+            <div id="title-char-count" class="char-counter">Залишилось символів: 100</div>
         </div>
         <div class="form-group">
             <label for="new-post-body">Текст/Контент</label>
@@ -72,7 +72,7 @@
     // лічильник символів заголовка
     const titleInput = document.getElementById('new-post-title');
     const titleCharCount = document.getElementById('title-char-count');
-    const maxLength = 140;
+    const maxLength = 100;
 
     if (titleInput && titleCharCount) {
 

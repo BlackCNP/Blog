@@ -142,8 +142,7 @@ public class PostController {
 
 
     @GetMapping("/author/{authorId}")
-    @Operation(summary = "Отримати всі пости автора", description = "Показати сторінку з усіма постами певного автора")
-    @ApiResponses(value = { /* ... */ })
+
 
     public String getPostsByAuthor(@PathVariable Long authorId, Model model, Principal principal) {
         Optional<Account> optionalAuthor = accountService.findById(authorId);
@@ -188,8 +187,7 @@ public class PostController {
 
 
     @GetMapping("/posts/{id}")
-    @Operation(summary = "Отримати пост за ID", description = "Отримати пост з бази даних за його ID")
-    @ApiResponses(value = { /* ... */ })
+
     public String getPost(@PathVariable Long id, Model model, Principal principal) {
         Optional<Post> optionalPost = this.postService.getById(id);
 
@@ -257,12 +255,7 @@ public class PostController {
 
     @PostMapping("/posts/create")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Створити новий пост", description = "Створити новий пост у базі даних")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "Редирект на сторінку поста"),
-            @ApiResponse(responseCode = "400", description = "Помилка даних форми"),
-            @ApiResponse(responseCode = "404", description = "Користувача не знайдено")
-    })
+
     public String createNewPost(@ModelAttribute Post post, BindingResult result, Principal principal) {
         if (result.hasErrors()) {
             return "post_create";
@@ -282,12 +275,7 @@ public class PostController {
 
     @GetMapping("/posts/{id}/edit")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Отримати пост для редагування", description = "Отримати пост з бази даних для редагування за його ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Успішне отримання поста"),
-            @ApiResponse(responseCode = "403", description = "Заборонено"),
-            @ApiResponse(responseCode = "404", description = "Пост не знайдено")
-    })
+
     public String getPostForEdit(@PathVariable Long id, Model model, Principal principal) {
         String authUsername = principal.getName();
         Optional<Post> optionalPost = postService.getById(id);
@@ -304,13 +292,7 @@ public class PostController {
 
     @PostMapping("/posts/{id}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Оновити пост за ID", description = "Оновити деталі поста з бази даних за його ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "Редирект на сторінку поста"),
-            @ApiResponse(responseCode = "400", description = "Помилка даних форми"),
-            @ApiResponse(responseCode = "403", description = "Заборонено"),
-            @ApiResponse(responseCode = "404", description = "Пост не знайдено")
-    })
+
     public String updatePost(@PathVariable Long id, @ModelAttribute Post post, BindingResult result, Model model, Principal principal) {
         if (result.hasErrors()) {
             post.setId(id); model.addAttribute("post", post); return "post_edit";
@@ -332,12 +314,7 @@ public class PostController {
 
     @GetMapping("/posts/{id}/delete")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Видалити пост за ID", description = "Видалити існуючий пост з бази даних за його ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "302", description = "Редирект на головну"),
-            @ApiResponse(responseCode = "403", description = "Заборонено"),
-            @ApiResponse(responseCode = "404", description = "Пост не знайдено")
-    })
+
     public String deletePost(@PathVariable Long id, Principal principal) {
         String authUsername = principal.getName();
         Optional<Post> optionalPost = postService.getById(id);

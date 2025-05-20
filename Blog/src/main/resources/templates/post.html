@@ -48,7 +48,7 @@
                 </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
             </span>
-            <a th:href="@{/posts/liked}" title="Вподобані пости" style="color: #1660ed;">&#x2764;&#xfe0f; Вподобане</a>
+            </span> <a th:href="@{/posts/liked}" title="Вподобані блоги" class="current-user-link">&#x2764;&#xfe0f; Вподобане</a>
             <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>

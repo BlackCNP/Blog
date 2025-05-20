@@ -47,7 +47,7 @@
                 </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
             </span>
-            <a th:href="@{/posts/liked}" title="Вподобані блоги" style="color: #1660ed;">&#x2764;&#xfe0f; Вподобане</a>
+            </span> <a th:href="@{/posts/liked}" title="Вподобані блоги" class="current-user-link">&#x2764;&#xfe0f; Вподобане</a>
             <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;">
                 <button type="submit">Вийти</button>
@@ -70,113 +70,113 @@
         <div class="posts-container">
             <div class="post" th:each="post : ${posts}">
                 <div> <h3><a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Заголовок поста</a></h3>
-                    <h5>Автор: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} + ' ' + ${post.account.lastName}">Ім'я Прізвище</a></h5>
+                    <h5>Автор: <a th:href="@{'/author/' + ${post.account.id}}" th:text="${post.account.firstName} ">Ім'я Прізвище</a></h5>
                     <div class="post-body-container">
                         <p class="post-body" th:text="${post.body}">Тіло публікації...</p>
                     </div>
-                    <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
-                </div>
+                    <!--   <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button> -->
+                   </div>
 
-                <div class="post-footer-section">
-                    <div class="post-meta" th:if="${post.createdAt != null}">
-                        <span th:text="'Опубліковано: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy')}">Дата</span>
-                    </div>
-                    <div class="like-section">
-                        <button type="button"
-                                class="like-button interactive liked"
-                                th:attr="data-post-id=${post.id}, data-liked='true'">
-                            <span>♥</span>
-                        </button>
-                        <span class="like-count" th:text="${likeCounts[post.id]} ?: '0'">0</span>
-                    </div>
-                </div> </div> </div> </div>
+                   <div class="post-footer-section">
+                       <div class="post-meta" th:if="${post.createdAt != null}">
+                           <span th:text="'Опубліковано: ' + ${#temporals.format(post.createdAt, 'dd.MM.yyyy')}">Дата</span>
+                       </div>
+                       <div class="like-section">
+                           <button type="button"
+                                   class="like-button interactive liked"
+                                   th:attr="data-post-id=${post.id}, data-liked='true'">
+                               <span>♥</span>
+                           </button>
+                           <span class="like-count" th:text="${likeCounts[post.id]} ?: '0'">0</span>
+                       </div>
+                   </div> </div> </div> </div>
 
-    <div th:if="${#lists.isEmpty(posts)}" class="no-posts-message">
-        <p>Ви ще не вподобали жодного поста.</p>
-        <p><a th:href="@{/}" style="color: #BB86FC; text-decoration: none;">Перейти на головну</a>, щоб знайти щось цікаве!</p>
-    </div>
+       <div th:if="${#lists.isEmpty(posts)}" class="no-posts-message">
+           <p>Ви ще не вподобали жодного поста.</p>
+           <p><a th:href="@{/}" style="color: #BB86FC; text-decoration: none;">Перейти на головну</a>, щоб знайти щось цікаве!</p>
+       </div>
 
-</div>
+   </div>
 
-<script>
-    // читати далі
-    function toggleReadMore(button) {
+   <script>
+       // читати далі
+       function toggleReadMore(button) {
 
-        const postItem = button.closest('.post');
-        if (!postItem) return;
-        const textContainer = postItem.querySelector('.post-body-container');
-        if (!textContainer) return;
-        const isNowExpanded = textContainer.classList.toggle('expanded');
-        button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
-        if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } }
-    }
+           const postItem = button.closest('.post');
+           if (!postItem) return;
+           const textContainer = postItem.querySelector('.post-body-container');
+           if (!textContainer) return;
+           const isNowExpanded = textContainer.classList.toggle('expanded');
+           button.textContent = isNowExpanded ? 'Згорнути' : 'Читати далі';
+           if (!isNowExpanded) { textContainer.style.maxHeight = null; } else { if (textContainer.style.maxHeight === 'none') { textContainer.style.maxHeight = null; } }
+       }
 
-    // лайк
-    document.addEventListener('DOMContentLoaded', () => {
+       // лайк
+       document.addEventListener('DOMContentLoaded', () => {
 
-        document.querySelectorAll('.post').forEach(item => {
-            const container = item.querySelector('.post-body-container');
-            const button = item.querySelector('.read-more-btn');
-            if (container && button) {
-                const computedStyle = window.getComputedStyle(container);
-                let maxHeight = 9999;
-                if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') { maxHeight = parseInt(computedStyle.maxHeight, 10); } else { if (computedStyle.minHeight && computedStyle.minHeight !== 'none') { maxHeight = parseInt(computedStyle.minHeight, 10); } else { maxHeight = 40; } }
-                if (container.scrollHeight > (maxHeight + 2)) { button.style.display = 'inline-block'; } else { container.style.maxHeight = 'none'; }
-            }
-        });
+           document.querySelectorAll('.post').forEach(item => {
+               const container = item.querySelector('.post-body-container');
+               const button = item.querySelector('.read-more-btn');
+               if (container && button) {
+                   const computedStyle = window.getComputedStyle(container);
+                   let maxHeight = 9999;
+                   if (computedStyle.maxHeight && computedStyle.maxHeight !== 'none') { maxHeight = parseInt(computedStyle.maxHeight, 10); } else { if (computedStyle.minHeight && computedStyle.minHeight !== 'none') { maxHeight = parseInt(computedStyle.minHeight, 10); } else { maxHeight = 40; } }
+                   if (container.scrollHeight > (maxHeight + 2)) { button.style.display = 'inline-block'; } else { container.style.maxHeight = 'none'; }
+               }
+           });
 
 
-        document.addEventListener('click', function(event) {
-            const likeButton = event.target.closest('.like-button.interactive');
-            if (likeButton) {
-                handleLikeClick(likeButton);
-            }
-        });
-    });
+           document.addEventListener('click', function(event) {
+               const likeButton = event.target.closest('.like-button.interactive');
+               if (likeButton) {
+                   handleLikeClick(likeButton);
+               }
+           });
+       });
 
-    async function handleLikeClick(button) {
-        const postId = button.dataset.postId;
-        const isLiked = button.dataset.liked === 'true';
-        const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
-        const headers = { 'Accept': 'application/json' };
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
-        const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
-        if (csrfHeader && csrfToken) { headers[csrfHeader] = csrfToken; }
-        try {
-            const response = await fetch(apiUrl, { method: 'POST', headers: headers });
-            if (!response.ok) { const errorData = await response.json().catch(() => ({ error: 'Server error: ' + response.status })); throw new Error(errorData.error || 'HTTP error'); }
-            const data = await response.json();
-            if (data.success) {
-                const likeCountSpan = button.nextElementSibling;
-                if (likeCountSpan && likeCountSpan.classList.contains('like-count')) { likeCountSpan.textContent = data.likeCount; }
-                button.classList.toggle('liked');
-                button.dataset.liked = data.userLiked;
-                const iconSpan = button.querySelector('span');
-                if(iconSpan) { iconSpan.textContent = data.userLiked ? '♥' : '♡'; }
+       async function handleLikeClick(button) {
+           const postId = button.dataset.postId;
+           const isLiked = button.dataset.liked === 'true';
+           const apiUrl = `/api/posts/${postId}/${isLiked ? 'unlike' : 'like'}`;
+           const headers = { 'Accept': 'application/json' };
+           const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+           const csrfToken = document.querySelector('meta[name="_csrf_token"]')?.content;
+           if (csrfHeader && csrfToken) { headers[csrfHeader] = csrfToken; }
+           try {
+               const response = await fetch(apiUrl, { method: 'POST', headers: headers });
+               if (!response.ok) { const errorData = await response.json().catch(() => ({ error: 'Server error: ' + response.status })); throw new Error(errorData.error || 'HTTP error'); }
+               const data = await response.json();
+               if (data.success) {
+                   const likeCountSpan = button.nextElementSibling;
+                   if (likeCountSpan && likeCountSpan.classList.contains('like-count')) { likeCountSpan.textContent = data.likeCount; }
+                   button.classList.toggle('liked');
+                   button.dataset.liked = data.userLiked;
+                   const iconSpan = button.querySelector('span');
+                   if(iconSpan) { iconSpan.textContent = data.userLiked ? '♥' : '♡'; }
 
-                // видалення поста  при анлайку
-                if (!data.userLiked && window.location.pathname.endsWith('/posts/liked')) {
+                   // видалення поста  при анлайку
+                   if (!data.userLiked && window.location.pathname.endsWith('/posts/liked')) {
 
-                    const postItem = button.closest('.post');
-                    if(postItem) {
-                        postItem.style.transition = 'opacity 0.5s ease-out';
-                        postItem.style.opacity = '0';
-                        setTimeout(() => {
-                            postItem.remove();
+                       const postItem = button.closest('.post');
+                       if(postItem) {
+                           postItem.style.transition = 'opacity 0.5s ease-out';
+                           postItem.style.opacity = '0';
+                           setTimeout(() => {
+                               postItem.remove();
 
-                            if(document.querySelectorAll('.post').length === 0) {
-                                const noPostsMsg = document.querySelector('.no-posts-message');
-                                if(noPostsMsg) noPostsMsg.style.display = 'block';
-                            }
-                        }, 500);
-                    }
-                }
+                               if(document.querySelectorAll('.post').length === 0) {
+                                   const noPostsMsg = document.querySelector('.no-posts-message');
+                                   if(noPostsMsg) noPostsMsg.style.display = 'block';
+                               }
+                           }, 500);
+                       }
+                   }
 
-            } else { throw new Error(data.error || 'Unknown server error'); }
-        } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
-    }
+               } else { throw new Error(data.error || 'Unknown server error'); }
+           } catch (error) { console.error('Like/Unlike failed:', error); alert('Помилка обробки лайка: ' + error.message); }
+       }
 
-</script>
+   </script>
 
-</body>
-</html>
+   </body>
+   </html>

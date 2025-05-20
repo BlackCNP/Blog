@@ -1,14 +1,13 @@
 package com.example.blog.controllers;
 
-
 import com.example.blog.models.Account;
 import com.example.blog.services.AccountService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,32 +15,67 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RegisterController {
 
-
     @Autowired
     private AccountService accountService;
 
-
-
-
     @GetMapping("/register")
-
     public String getRegisterPage(Model model) {
-        Account account = new Account();
-        model.addAttribute("account", account);
+        if (!model.containsAttribute("account")) {
+            model.addAttribute("account", new Account());
+        }
         return "register";
     }
 
-
-
     @PostMapping("/register")
-    @Operation(summary = "Зареєструвати нового користувача", description = "Зареєструвати нового користувача в системі")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Успішна реєстрація"),
-            @ApiResponse(responseCode = "400", description = "Помилка валідації даних"),
-            @ApiResponse(responseCode = "500", description = "Внутрішня помилка сервера")
-    })
-    public String registerNewUser(@ModelAttribute Account account) {
-        accountService.save(account);
-        return "redirect:/";
+    public String registerNewUser(@Valid @ModelAttribute("account") Account account,
+                                  BindingResult bindingResult,
+                                  Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
+
+        try {
+            accountService.save(account);
+            return "redirect:/login?registered";
+        } catch (IllegalArgumentException e) {
+            String message = e.getMessage();
+            if (message != null) {
+                if (message.startsWith(AccountService.MSG_PREFIX_EMAIL_EXISTS)) {
+
+                    String userMessage = message.substring(AccountService.MSG_PREFIX_EMAIL_EXISTS.length());
+                    bindingResult.rejectValue("email", "error.account.email", userMessage);
+                } else if (message.startsWith(AccountService.MSG_PREFIX_NICKNAME_EXISTS)) {
+                    String userMessage = message.substring(AccountService.MSG_PREFIX_NICKNAME_EXISTS.length());
+                    bindingResult.rejectValue("firstName", "error.account.firstName", userMessage);
+                } else {
+
+                    model.addAttribute("registrationError", "Невідома помилка валідації.");
+                }
+            } else {
+                model.addAttribute("registrationError", "Сталася помилка під час реєстрації.");
+            }
+            return "register";
+        } catch (DataIntegrityViolationException e) {
+            String rootCauseMessage = e.getMostSpecificCause().getMessage().toLowerCase();
+            boolean errorProcessed = false;
+
+            if (rootCauseMessage.contains("account_email_key") || rootCauseMessage.contains("constraint violation for public.account(email)")) {
+                bindingResult.rejectValue("email", "error.db.email", "Ця пошта вже зареєстрована (DB).");
+                errorProcessed = true;
+            }
+            if (rootCauseMessage.contains("account_firstname_key") || rootCauseMessage.contains("constraint violation for public.account(firstname)")) {
+                bindingResult.rejectValue("firstName", "error.db.firstName", "Цей псевдонім вже використовується (DB).");
+                errorProcessed = true;
+            }
+
+            if (!errorProcessed) {
+                model.addAttribute("registrationError", "Помилка реєстрації: дані вже існують (DB).");
+            }
+            return "register";
+        } catch (Exception e) {
+            model.addAttribute("registrationError", "Сталася неочікувана помилка.");
+            return "register";
+        }
     }
 }

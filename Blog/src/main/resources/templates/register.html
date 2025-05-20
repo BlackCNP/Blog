@@ -11,7 +11,6 @@
             try {
                 var theme = localStorage.getItem('theme');
                 if (theme === 'light') {
-
                     document.documentElement.classList.add('light-theme');
                 }
             } catch (e) {
@@ -20,9 +19,17 @@
         })();
     </script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-
+    <style>
+        .server-error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        .server-error-message p {
+            margin-bottom: 2px;
+        }
+    </style>
     <script th:src="@{/js/theme-switcher.js}" defer></script>
-
 </head>
 <body>
 <div class="register-container">
@@ -31,31 +38,44 @@
     <hr />
 
     <h2 class="text-center">Реєстрація</h2>
+
+    <div th:if="${registrationError}" class="error-message" style="text-align: center; margin-bottom: 15px; color: red;" th:text="${registrationError}">
+    </div>
+
     <form action="#" id="register-form"
           th:action="@{/register}"
           th:object="${account}"
           method="POST"
-          novalidate> <div class="form-group" id="nickname-group">
-        <label for="firstname">Ваш псевдонім
-            <span class="tooltip-container">
+          novalidate>
+
+        <div class="form-group" id="nickname-group">
+            <label for="firstname">Ваш псевдонім
+                <span class="tooltip-container">
                     <span class="tooltip-icon" aria-label="Інформація">ⓘ</span>
                     <span class="tooltip-text">Мінімум 4, максимум 20 символів, без пробілів. Буде видно всім користувачам.</span>
-                 </span>
-        </label>
-        <input id="firstname" type="text" th:field="*{firstName}" placeholder="Псевдонім" required
-               pattern="^\S*$"          minlength="4"             maxlength="20"            title="Мінімум 4, максимум 20 символів, без пробілів." /> <span class="error-message" id="nickname-error"></span>
-    </div>
+                </span>
+            </label>
+            <input id="firstname" type="text" th:field="*{firstName}" placeholder="Псевдонім" required
+                   pattern="^\S*$" minlength="4" maxlength="20" title="Мінімум 4, максимум 20 символів, без пробілів." />
+            <span class="error-message" id="nickname-error"></span>
+            <div th:if="${#fields.hasErrors('firstName')}" class="server-error-message">
+                <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></p>
+            </div>
+        </div>
 
         <div class="form-group" id="lastname-group">
             <label for="lastname">Ваше Ім'я
                 <span class="tooltip-container">
                     <span class="tooltip-icon" aria-label="Інформація">ⓘ</span>
-                     <span class="tooltip-text">Максимум 20 символів. Дозволено літери, цифри, дефіс, апостроф (без пробілів). Буде видно тільки адміністратору.</span>
-                 </span>
+                    <span class="tooltip-text">Максимум 20 символів. Дозволено літери, цифри, дефіс, апостроф (без пробілів). Буде видно тільки адміністратору.</span>
+                </span>
             </label>
             <input id="lastname" type="text" th:field="*{lastName}" placeholder="Ім'я" required
                    pattern="^[a-zA-Zа-яА-ЯёЁіїєґҐ'0-9-]+$" maxlength="20" title="Максимум 20 символів. Дозволено літери, цифри, дефіс, апостроф." />
             <span class="error-message" id="lastname-error"></span>
+            <div th:if="${#fields.hasErrors('lastName')}" class="server-error-message">
+                <p th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></p>
+            </div>
         </div>
 
         <div class="form-group">
@@ -63,30 +83,43 @@
             <input id="email" type="email" th:field="*{email}" placeholder="Пошта" required
                    pattern="^\S+$" title="Введіть дійсну адресу пошти (без пробілів)." />
             <span class="error-message" id="email-error"></span>
+            <div th:if="${#fields.hasErrors('email')}" class="server-error-message">
+                <p th:each="err : ${#fields.errors('email')}" th:text="${err}"></p>
+            </div>
         </div>
 
         <div class="form-group" id="password-group">
             <label for="password">Пароль</label>
             <input id="password" type="password" th:field="*{password}" placeholder="Пароль" required
-                   pattern="^\S*$"    minlength="8"     title="Мінімум 8 символів, без пробілів." />
+                   pattern="^\S*$" minlength="8" title="Мінімум 8 символів, без пробілів." />
             <span class="error-message" id="password-error"></span>
+            <div th:if="${#fields.hasErrors('password')}" class="server-error-message">
+                <p th:each="err : ${#fields.errors('password')}" th:text="${err}"></p>
+            </div>
         </div>
 
         <button type="submit">Зареєструватися</button>
-        <p class="terms">Натискаючи "Зареєструватися", ви погоджуєтесь з умовами використання.</p>
+        <p class="terms">Натискаючи "Зареєструватися", ви погоджуєтесь з правилами користувааня.</p>
     </form>
 </div>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', () => {
-
+        ['firstname', 'lastname', 'email', 'password'].forEach(fieldId => {
+            const inputElement = document.getElementById(fieldId);
+            if (inputElement) {
+                inputElement.addEventListener('input', () => {
+                    const serverErrorDiv = inputElement.closest('.form-group').querySelector('.server-error-message');
+                    if (serverErrorDiv) {
+                        serverErrorDiv.innerHTML = '';
+                    }
+                });
+            }
+        });
     });
 
     function closeAllTooltips(exceptContainer = null) {
-
     }
-
 
     const form = document.getElementById('register-form');
     const nicknameInput = document.getElementById('firstname');
@@ -98,7 +131,6 @@
     const lastnameGroup = document.getElementById('lastname-group');
     const passwordGroup = document.getElementById('password-group');
 
-
     const nicknameError = document.getElementById('nickname-error');
     const lastnameError = document.getElementById('lastname-error');
     const emailError = document.getElementById('email-error');
@@ -106,30 +138,25 @@
 
     const submitButton = form.querySelector('button[type="submit"]');
 
-
     const namePattern = /^[a-zA-Zа-яА-ЯіїєґҐ'0-9-]+$/;
     const minNicknameLength = 4;
     const maxNicknameLength = 20;
     const maxLastnameLength = 20;
     const minPasswordLength = 8;
 
-
     function validateField(inputElement, errorElement) {
         let errorMessage = '';
         let isValid = true;
-        const value = inputElement.value.trim(); // без зовнішніх пробілів
-        const originalValue = inputElement.value; // з пробілами
+        const value = inputElement.value.trim();
+        const originalValue = inputElement.value;
         let shakeElement = null;
 
-        // еревірка на пустоту
         if (inputElement.required && value === '') {
             errorMessage = "Це поле є обов'язковим.";
             isValid = false;
-
         } else {
-
             switch (inputElement.id) {
-                case 'firstname': // Псевдонім
+                case 'firstname':
                     shakeElement = nicknameGroup;
                     if (/\s/.test(originalValue)) {
                         errorMessage = 'Псевдонім не повинен містити пробілів.';
@@ -142,10 +169,9 @@
                         isValid = false;
                     }
                     break;
-
-                case 'lastname': // Ім'я
+                case 'lastname':
                     shakeElement = lastnameGroup;
-                    if (/\s/.test(originalValue)) { // Перевірка на будь-які пробіли
+                    if (/\s/.test(originalValue)) {
                         errorMessage = 'Ім\'я не повинно містити пробілів.';
                         isValid = false;
                     } else if (!namePattern.test(value) && value.length > 0) {
@@ -156,25 +182,21 @@
                         isValid = false;
                     }
                     break;
-
                 case 'email':
-
-                    if (/\s/.test(originalValue)) { // Перевірка на пробіли
+                    if (/\s/.test(originalValue)) {
                         errorMessage = 'Пошта не повинна містити пробілів.';
                         isValid = false;
-                        //  вбудована валідація браузера  email
                     } else if (!inputElement.checkValidity() && value.length > 0) {
                         errorMessage = 'Будь ласка, введіть дійсну адресу пошти.';
                         isValid = false;
                     }
                     break;
-
                 case 'password':
                     shakeElement = passwordGroup;
-                    if (/\s/.test(originalValue)) { // Перевірка на пробіли
+                    if (/\s/.test(originalValue)) {
                         errorMessage = 'Пароль не повинен містити пробілів.';
                         isValid = false;
-                    } else if (value.length > 0 && value.length < minPasswordLength) { // Мін. довжина
+                    } else if (value.length > 0 && value.length < minPasswordLength) {
                         errorMessage = `Пароль має містити щонайменше ${minPasswordLength} символів.`;
                         isValid = false;
                     }
@@ -182,56 +204,49 @@
             }
         }
 
-        // помилки та стилів
         errorElement.textContent = errorMessage.trim();
         if (!isValid) {
             errorElement.style.display = 'block';
             inputElement.classList.add('invalid-input');
-
             if (errorMessage !== "Це поле є обов'язковим." && shakeElement && !shakeElement.classList.contains('shake')) {
                 shakeElement.classList.add('shake');
-
-                setTimeout(() => { shakeElement.classList.remove('shake'); }, 400); //  тривалість
+                setTimeout(() => { shakeElement.classList.remove('shake'); }, 400);
             }
         } else {
-
             errorElement.style.display = 'none';
             inputElement.classList.remove('invalid-input');
         }
         return isValid;
     }
 
-
     [nicknameInput, lastnameInput, emailInput, passwordInput].forEach(input => {
         const errorElement = document.getElementById(input.id + '-error');
         if (errorElement) {
             input.addEventListener('input', () => validateField(input, errorElement));
+            input.addEventListener('input', () => {
+                const serverErrorDiv = input.closest('.form-group').querySelector('.server-error-message');
+                if (serverErrorDiv) {
+                    serverErrorDiv.innerHTML = '';
+                }
+            });
         }
     });
 
-
     form.addEventListener('submit', function(event) {
-
         const isNicknameValid = validateField(nicknameInput, nicknameError);
         const isLastnameValid = validateField(lastnameInput, lastnameError);
         const isEmailValid = validateField(emailInput, emailError);
         const isPasswordValid = validateField(passwordInput, passwordError);
 
-
         if (!isNicknameValid || !isLastnameValid || !isEmailValid || !isPasswordValid) {
             event.preventDefault();
-            console.log("Form submission prevented due to validation errors.");
-
-
+            console.log("Form submission prevented due to client-side validation errors.");
             if (!isNicknameValid) nicknameInput.focus();
             else if (!isLastnameValid) lastnameInput.focus();
             else if (!isEmailValid) emailInput.focus();
             else if (!isPasswordValid) passwordInput.focus();
         }
-
     });
-
 </script>
-
 </body>
 </html>

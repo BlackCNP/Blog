@@ -1,6 +1,9 @@
 package com.example.blog.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,10 +22,22 @@ public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
+    @NotBlank(message = "Пошта не може бути порожньою")
+    @Email(message = "Некоректний формат пошти")
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @NotBlank(message = "Пароль не може бути порожнім")
+    @Size(min = 8, message = "Пароль має містити щонайменше 8 символів")
     private String password;
+
+    @NotBlank(message = "Псевдонім не може бути порожнім")
+    @Size(min = 4, max = 20, message = "Псевдонім має містити від 4 до 20 символів")
+    @Column(unique = true, nullable = false) // Унікальність для ніка (firstName)
     private String firstName;
+
+    @NotBlank(message = "Ім'я не може бути порожнім")
+    @Size(max = 20, message = "Ім'я має містити не більше 20 символів")
     private String lastName;
 
     // Звязок з постами написаними користувачем

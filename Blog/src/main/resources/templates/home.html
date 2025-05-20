@@ -42,7 +42,7 @@
             <span>Привіт, <a th:if="${currentUserAccount != null}" th:href="@{'/author/' + ${currentUserAccount.id}}" th:text="${currentUserAccount.firstName != null ? currentUserAccount.firstName : #authentication.principal.username}" class="current-user-link">
             </a>
                 <b th:unless="${currentUserAccount != null}" sec:authentication="name" class="current-user-link">Username</b>
-            </span> <a th:href="@{/posts/liked}" title="Вподобані блоги" style="color: #1660ed;">&#x2764;&#xfe0f; Вподобане</a> <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
+            </span> <a th:href="@{/posts/liked}" title="Вподобані блоги" class="current-user-link">&#x2764;&#xfe0f; Вподобане</a> <a th:href="@{/posts/create}" class="create-post-btn">Написати Блог</a>
             <form class="#" th:action="@{/logout}" method="POST" style="display: inline;"> <button type="submit">Вийти</button>
             </form>
 
@@ -86,7 +86,7 @@
             <div class="post-body-container">
                 <p class="post-body" th:text="${post.body}">Текст блогу...</p>
             </div>
-            <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button>
+           <!-- <button class="read-more-btn" onclick="toggleReadMore(this)">Читати далі</button> -->
 
             <div class="like-section">
                 <button th:if="${#authorization.expression('isAuthenticated()')}"
